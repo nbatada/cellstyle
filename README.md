@@ -4,6 +4,22 @@ Consistent scientific plots for researchers working with single-cell data and bi
 
 CellStyle adds clean themes, explicit identity colors, replicate displays, and supplied statistical annotations to familiar plotting workflows. Prefer native Scanpy and Seurat plots when they express your question; apply styling where useful.
 
+## See the difference
+
+Both comparisons use the same synthetic observations on the left and right. They demonstrate plotting behavior, not a biological result.
+
+### Focus on one population (Python)
+
+![Two views of the same synthetic embedding: a default categorical scatter on the left and a CellStyle focus view with faint context on the right.](docs/images/focus_comparison.png)
+
+CellStyle keeps the other states visible as context while drawing attention to the selected state. The coordinates stay fixed. [Reproduce this plot](examples/python_focus_comparison.py).
+
+### Show the individual replicates (R)
+
+![Two views of the same synthetic observations: default ggplot2 points on the left and a CellStyle beeswarm with open median and interquartile range on the right.](docs/images/replicates_comparison.png)
+
+The true beeswarm separates overlapping observations; the median and interquartile range remain secondary to the individual values. Both panels use the same y-axis. [Reproduce this plot](examples/r_replicate_comparison.R).
+
 **Provisional source version: 0.2.0.** Install from GitHub `main` using the commands below. This source snapshot is not a stable release or a claim of PyPI/CRAN availability. APIs and visual defaults may change. For reproducible work, record the installed commit and dependency versions; `main` can move.
 
 ## Install
