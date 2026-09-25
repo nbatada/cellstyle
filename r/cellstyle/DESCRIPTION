@@ -1,0 +1,14 @@
+Package: cellstyle
+Title: Semantic Scientific Styling for Native ggplot2 Plots
+Version: 0.2.0
+Authors@R: person("Nizar", "Batada", email = "nizar.batada@gmail.com", role = c("aut", "cre"))
+Description: Composable scientific themes, identity colors, biological replicate
+    displays, and supplied statistical annotations for native ggplot2 plots.
+    Statistical tests are never selected or computed by annotation helpers.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Depends: R (>= 4.1.0)
+Imports: ggplot2 (>= 3.5.0), rlang
+Suggests: ggbeeswarm, ggrepel
+URL: https://github.com/nbatada/cellstyle
+BugReports: https://github.com/nbatada/cellstyle/issues

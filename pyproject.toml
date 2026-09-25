@@ -1,0 +1,52 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cellstyle"
+dynamic = ["version"]
+description = "Scientifically semantic visualization for single-cell biology"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{name = "Nizar Batada"}]
+keywords = ["single-cell", "visualization", "scanpy", "matplotlib", "bioinformatics"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+    "Topic :: Scientific/Engineering :: Visualization",
+]
+dependencies = [
+    "matplotlib>=3.7",
+    "numpy>=1.24",
+    "pandas>=2.0",
+    "seaborn>=0.13",
+    "adjustText>=1.1",
+]
+
+[project.urls]
+Homepage = "https://github.com/nbatada/cellstyle"
+Repository = "https://github.com/nbatada/cellstyle"
+Issues = "https://github.com/nbatada/cellstyle/issues"
+
+[project.optional-dependencies]
+scanpy = ["scanpy>=1.10"]
+
+[tool.setuptools]
+include-package-data = false
+
+[tool.setuptools.dynamic]
+version = {file = ["VERSION"]}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["cellstyle*"]

@@ -1,0 +1,9 @@
+cff-version: 1.2.0
+message: "If you use CellStyle, please cite the software and record the installed commit."
+title: "CellStyle"
+version: 0.2.0
+license: MIT
+type: software
+authors:
+  - family-names: "Batada"
+    given-names: "Nizar"
