@@ -2,7 +2,31 @@
 
 Consistent scientific plots for researchers working with single-cell data and biological replicates in Python or R.
 
-CellStyle adds clean themes, explicit identity colors, replicate displays, and supplied statistical annotations to familiar plotting workflows. Prefer native Scanpy and Seurat plots when they express your question; apply styling where useful.
+CellStyle offers a Scanpy-compatible plotting facade alongside identity colors,
+replicate displays, and supplied statistical annotations. UMAP visual defaults
+are being developed through controlled comparisons; publication readiness is
+not yet established.
+
+```python
+import cellstyle as cs
+
+cs.pl.umap(adata, color="cell_type")
+cs.pl.umap(adata, color="TRDC")
+cs.pl.umap(adata, color=["cell_type", "TRDC"])
+```
+
+`adata` is your existing AnnData object with a computed UMAP. The `cs.pl` facade
+currently preserves native Scanpy behavior, including display, save, and return
+controls. No theme setup is required. Other named facade functions are
+compatibility passthroughs, not visually audited CellStyle styling. See the
+[facade checkpoint](docs/SCANPY_FACADE_V1.md) and
+[D1 editorial color refinement](docs/EDITORIAL_PALETTE_REFINEMENT.md).
+
+**This development API is on `codex/scanpy-facade-v1`, pending review:**
+
+```bash
+python -m pip install "cellstyle[scanpy] @ git+https://github.com/nbatada/cellstyle.git@codex/scanpy-facade-v1"
+```
 
 ## See the difference
 
@@ -48,7 +72,7 @@ remotes::install_github(
 
 R imports ggplot2 ≥3.5.0 and rlang. Install `ggbeeswarm` for replicate distributions and `ggrepel` for repelled labels as needed.
 
-## Python quickstart
+## Specialized replicate example
 
 Each synthetic row below represents one biological replicate. Reuse the same explicit identity-to-color mapping in every figure so one biological identity retains one color.
 
@@ -113,6 +137,7 @@ Statistical annotations currently target categorical x positions and linear y ax
 
 ## Python API at a glance
 
+- Scanpy compatibility: `pl.umap`, `pl.embedding`, `pl.tsne`, `pl.pca`, `pl.dotplot`, `pl.matrixplot`, `pl.heatmap`, `pl.violin`, `pl.stacked_violin` (currently native passthroughs)
 - Themes: `set_theme`, `theme_context`
 - Colors: `EDITORIAL_VIVID`, `editorial_vivid`, `positive_cmap`, `marker_heatmap_cmap`, `context_color`, `ColorRegistry`
 - Plots: `replicate_distribution`, `quantitative_scatter`
