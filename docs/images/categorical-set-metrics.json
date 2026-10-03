@@ -1,0 +1,242 @@
+{
+  "5": {
+    "fixture_sha256": "7063703bcb5e68e6036ac6b30c5bebdd7bd5d3ccc06e948c0ea24ae0558de764",
+    "variants": {
+      "D1": {
+        "palette": {
+          "Activated T": "#1764AB",
+          "Cytotoxic T": "#00A2A5",
+          "Exhausted T": "#E6A700",
+          "Memory T": "#D43F3A",
+          "Naive T": "#8A4FA3"
+        },
+        "repeated_swatches": 0,
+        "minimum_deltaE76": 36.15587093022332,
+        "lightness_range": [
+          41.58753305691095,
+          72.53778126570984
+        ]
+      },
+      "D2": {
+        "palette": {
+          "Activated T": "#4070cf",
+          "Cytotoxic T": "#00af00",
+          "Exhausted T": "#ff0000",
+          "Memory T": "#ff00ff",
+          "Naive T": "#bf8f00"
+        },
+        "repeated_swatches": 0,
+        "minimum_deltaE76": 72.72354918477689,
+        "lightness_range": [
+          48.487745442906984,
+          62.27375502319076
+        ]
+      },
+      "D3": {
+        "palette": {
+          "Activated T": "#20609f",
+          "Cytotoxic T": "#00df00",
+          "Exhausted T": "#ff0000",
+          "Memory T": "#0000ff",
+          "Naive T": "#ff00af"
+        },
+        "repeated_swatches": 0,
+        "minimum_deltaE76": 89.02165235017225,
+        "lightness_range": [
+          32.297010932850725,
+          77.7400888952252
+        ]
+      }
+    }
+  },
+  "12": {
+    "fixture_sha256": "0f59d169fd3633be9172f0f371df5cee4bda718dab25c7c319ff92d9b9d58b0f",
+    "variants": {
+      "D1": {
+        "palette": {
+          "Activated T": "#1764AB",
+          "Cycling NK": "#00A2A5",
+          "Cytotoxic T": "#E6A700",
+          "Exhausted T": "#D43F3A",
+          "Gamma delta T": "#8A4FA3",
+          "Memory B": "#748D37",
+          "Memory T": "#593315",
+          "NK": "#DF9FBE",
+          "Naive B": "#DBB087",
+          "Naive T": "#6F7478",
+          "Plasma": "#A7C7DA",
+          "Regulatory T": "#B26C2E"
+        },
+        "repeated_swatches": 0,
+        "minimum_deltaE76": 31.42315960768347,
+        "lightness_range": [
+          25.40066485840682,
+          78.53318277959833
+        ]
+      },
+      "D2": {
+        "palette": {
+          "Activated T": "#4070cf",
+          "Cycling NK": "#00af00",
+          "Cytotoxic T": "#ff0000",
+          "Exhausted T": "#ff00ff",
+          "Gamma delta T": "#bf8f00",
+          "Memory B": "#ff709f",
+          "Memory T": "#10af80",
+          "NK": "#bf5030",
+          "Naive B": "#8050ff",
+          "Naive T": "#bf50bf",
+          "Plasma": "#608020",
+          "Regulatory T": "#ff8000"
+        },
+        "repeated_swatches": 0,
+        "minimum_deltaE76": 35.92246308429184,
+        "lightness_range": [
+          48.298352850789485,
+          67.05481699608424
+        ]
+      },
+      "D3": {
+        "palette": {
+          "Activated T": "#20609f",
+          "Cycling NK": "#00df00",
+          "Cytotoxic T": "#ff0000",
+          "Exhausted T": "#0000ff",
+          "Gamma delta T": "#ff00af",
+          "Memory B": "#706000",
+          "Memory T": "#00cfaf",
+          "NK": "#ef9faf",
+          "Naive B": "#9f70ff",
+          "Naive T": "#ff9f00",
+          "Plasma": "#8f1020",
+          "Regulatory T": "#008010"
+        },
+        "repeated_swatches": 0,
+        "minimum_deltaE76": 48.710032711147484,
+        "lightness_range": [
+          30.19719707345977,
+          77.7400888952252
+        ]
+      }
+    }
+  },
+  "28": {
+    "fixture_sha256": "087cf6d44dda331e1866dbd4bd41f7df05f7a5a99247cc1bf623448d21565f06",
+    "variants": {
+      "D1": {
+        "palette": {
+          "Activated T": "#1764AB",
+          "Basophil": "#00A2A5",
+          "Classical monocyte": "#E6A700",
+          "Cycling": "#D43F3A",
+          "Cycling NK": "#8A4FA3",
+          "Cytotoxic T": "#748D37",
+          "Endothelial": "#593315",
+          "Epithelial": "#DF9FBE",
+          "Erythroid": "#DBB087",
+          "Exhausted T": "#6F7478",
+          "Fibroblast": "#A7C7DA",
+          "Gamma delta T": "#B26C2E",
+          "Macrophage": "#AB294D",
+          "Mast": "#A9D086",
+          "Megakaryocyte": "#A87569",
+          "Memory B": "#8296CE",
+          "Memory T": "#A2B737",
+          "NK": "#C8A54F",
+          "Naive B": "#33493F",
+          "Naive T": "#C561A6",
+          "Neutrophil": "#346E32",
+          "Nonclassical monocyte": "#C5BDB2",
+          "Plasma": "#863A72",
+          "Regulatory T": "#58A34C",
+          "Smooth muscle": "#E77F49",
+          "cDC1": "#5E4281",
+          "cDC2": "#95512D",
+          "pDC": "#554E56"
+        },
+        "repeated_swatches": 0,
+        "minimum_deltaE76": 15.525186836400097,
+        "lightness_range": [
+          25.40066485840682,
+          79.19497309321447
+        ]
+      },
+      "D2": {
+        "palette": {
+          "Activated T": "#4070cf",
+          "Basophil": "#00af00",
+          "Classical monocyte": "#ff0000",
+          "Cycling": "#ff00ff",
+          "Cycling NK": "#bf8f00",
+          "Cytotoxic T": "#ff709f",
+          "Endothelial": "#10af80",
+          "Epithelial": "#bf5030",
+          "Erythroid": "#8050ff",
+          "Exhausted T": "#bf50bf",
+          "Fibroblast": "#608020",
+          "Gamma delta T": "#ff8000",
+          "Macrophage": "#ff0050",
+          "Mast": "#ff00af",
+          "Megakaryocyte": "#80af00",
+          "Memory B": "#9f80ff",
+          "Memory T": "#008f30",
+          "NK": "#ff1080",
+          "Naive B": "#df8f50",
+          "Naive T": "#df60ff",
+          "Neutrophil": "#0070ff",
+          "Nonclassical monocyte": "#ff7070",
+          "Plasma": "#af20ff",
+          "Regulatory T": "#ff6030",
+          "Smooth muscle": "#cf308f",
+          "cDC1": "#9f9f20",
+          "cDC2": "#cf80cf",
+          "pDC": "#cf00bf"
+        },
+        "repeated_swatches": 0,
+        "minimum_deltaE76": 22.094527636905188,
+        "lightness_range": [
+          48.29810574739642,
+          67.05481699608424
+        ]
+      },
+      "D3": {
+        "palette": {
+          "Activated T": "#20609f",
+          "Basophil": "#00df00",
+          "Classical monocyte": "#ff0000",
+          "Cycling": "#0000ff",
+          "Cycling NK": "#ff00af",
+          "Cytotoxic T": "#706000",
+          "Endothelial": "#00cfaf",
+          "Epithelial": "#ef9faf",
+          "Erythroid": "#9f70ff",
+          "Exhausted T": "#ff9f00",
+          "Fibroblast": "#8f1020",
+          "Gamma delta T": "#008010",
+          "Macrophage": "#afbf00",
+          "Mast": "#802070",
+          "Megakaryocyte": "#30cfff",
+          "Memory B": "#df00ff",
+          "Memory T": "#106050",
+          "NK": "#bfbf8f",
+          "Naive B": "#ff0060",
+          "Naive T": "#bfafff",
+          "Neutrophil": "#ff8060",
+          "Nonclassical monocyte": "#6000bf",
+          "Plasma": "#805040",
+          "Regulatory T": "#ef80df",
+          "Smooth muscle": "#8fcf70",
+          "cDC1": "#0040af",
+          "cDC2": "#af10af",
+          "pDC": "#af6000"
+        },
+        "repeated_swatches": 0,
+        "minimum_deltaE76": 31.822062243188643,
+        "lightness_range": [
+          30.02955917204158,
+          77.7400888952252
+        ]
+      }
+    }
+  }
+}

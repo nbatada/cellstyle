@@ -32,7 +32,15 @@ The reference's dead expression-colormap code was omitted. The provisional
 frame default was withheld because categorical presentation is the next visual
 decision after colors, not a default already accepted in this ticket.
 
-## First controlled categorical-color comparison
+## Active color decision: Candidate D
+
+The scientist has selected **deterministic set-based allocation** as the design
+contract: same category set → stable mapping; changed category set → mapping may
+change. Cross-dataset persistence is explicit via a supplied palette or registry.
+See [Candidate D's three palette variants](CATEGORICAL_SET_DECISION.md). B/C are
+retired from further development; no variant is installed as a default.
+
+## Historical A/B/C comparison (superseded)
 
 ![Three identity-color strategies for 5, 12 and 28 synthetic populations](images/categorical-color-candidates.png)
 
@@ -97,8 +105,8 @@ needed because R and the existing plotting implementations were unchanged.
 
 ## Stop point and unresolved constraints
 
-Selection of A, B, C, or a revised candidate is required before any categorical
-color rule becomes a package default. Other visual decisions remain pending:
+Scientist selection of Candidate D's palette/allocation variant is required
+before any categorical color rule becomes a package default. Other visual decisions remain pending:
 categorical presentation, continuous scales, long-label multipanel spacing, and
 large-N rasterization. The demonstrated native long-legend overlap and export
 policy remain explicit limitations at this checkpoint. A future scoped change

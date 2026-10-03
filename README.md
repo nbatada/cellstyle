@@ -19,7 +19,8 @@ cs.pl.umap(adata, color=["cell_type", "TRDC"])
 currently preserves native Scanpy behavior, including display, save, and return
 controls. No theme setup is required. Other named facade functions are
 compatibility passthroughs, not visually audited CellStyle styling. See the
-[facade checkpoint and first color comparison](docs/SCANPY_FACADE_V1.md).
+[facade checkpoint](docs/SCANPY_FACADE_V1.md) and
+[Candidate D color comparison](docs/CATEGORICAL_SET_DECISION.md).
 
 **This development API is on `codex/scanpy-facade-v1`, pending review:**
 
