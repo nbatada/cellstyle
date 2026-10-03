@@ -3,6 +3,8 @@ from __future__ import annotations
 from collections.abc import Mapping, Sequence
 
 import numpy as np
+from numbers import Real
+from matplotlib.colors import is_color_like
 from matplotlib.axes import Axes
 
 from .schema import ComparisonResult
@@ -43,6 +45,8 @@ def _group_positions(
         for tick in ax.get_xticklabels()
     ]
 
+    if len(labels) != len(set(labels)) or any(not label for label in labels):
+        raise ValueError("X tick labels must uniquely identify groups; otherwise supply positions.")
     ticks = list(ax.get_xticks())
 
     return {
@@ -91,12 +95,35 @@ def add_comparisons(
     if not results:
         return ax
 
+    if ax.name != "rectilinear" or ax.get_xscale() != "linear" or ax.get_yscale() != "linear":
+        raise ValueError("Comparisons require Cartesian axes with linear scales and categorical x positions.")
+    def finite(value):
+        return isinstance(value, Real) and not isinstance(value, bool) and np.isfinite(value)
+    for name, value in (("step_fraction", step_fraction), ("bracket_height_fraction", bracket_height_fraction),
+                        ("line_width", line_width), ("fontsize", fontsize)):
+        if not finite(value) or value < 0:
+            raise ValueError(f"{name} must be a finite nonnegative number.")
+    if step_fraction <= bracket_height_fraction or line_width == 0 or fontsize == 0:
+        raise ValueError("Spacing must exceed bracket height, and line width/font size must be positive.")
+    if y_start is not None and not finite(y_start):
+        raise ValueError("y_start must be finite.")
+    if not is_color_like(color):
+        raise ValueError("Invalid annotation color.")
     xpos = _group_positions(ax, positions)
+    if any(not finite(pos) for pos in xpos.values()) or len(set(xpos.values())) != len(xpos):
+        raise ValueError("Group positions must be finite and distinct.")
+    # Validate every result before adding any artist or changing limits.
+    for result in results:
+        for field in ("group_a", "group_b"):
+            if getattr(result, field) not in xpos:
+                raise KeyError(f"Unknown {field}: {getattr(result, field)!r}")
+        if result.label is None and result.display_p() is None:
+            raise ValueError("Each comparison needs a label or supplied P value.")
 
     ymin, ymax = ax.get_ylim()
     yrange = ymax - ymin
 
-    if yrange <= 0:
+    if not np.isfinite(yrange) or yrange <= 0:
         raise ValueError("Axis has invalid Y range.")
 
     if y_start is None:
@@ -105,6 +132,8 @@ def add_comparisons(
     step = step_fraction * yrange
     bracket_h = bracket_height_fraction * yrange
 
+    if not np.isfinite(y_start + len(results) * step + bracket_h):
+        raise ValueError("Annotation geometry exceeds finite coordinates.")
     top = ymax
 
     for i, result in enumerate(results):
