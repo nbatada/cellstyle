@@ -120,3 +120,14 @@ Statistical annotations currently target categorical x positions and linear y ax
 - Supplied comparisons: `ComparisonResult`, `add_comparisons`
 
 Licensed under the [MIT license](LICENSE). Citation metadata is in [CITATION.cff](CITATION.cff).
+
+### Correctness contracts
+
+Embedding palettes should be keyed by string identity to preserve colors across
+category/row reordering. Both helpers accept an exact `obsm` key or an alias such
+as `umap` for `X_umap`, and enforce equal coordinate scaling. Distribution order
+must include all observed groups; filter the data explicitly to select a subset.
+Supplied P values must be finite probabilities, and comparison rendering supports
+ordinary Cartesian axes with linear scales. See the
+[correctness review receipt](docs/REVIEW_CORRECTNESS.md) for regressions, context
+defaults, validation, and remaining limitations.
