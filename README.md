@@ -20,7 +20,7 @@ currently preserves native Scanpy behavior, including display, save, and return
 controls. No theme setup is required. Other named facade functions are
 compatibility passthroughs, not visually audited CellStyle styling. See the
 [facade checkpoint](docs/SCANPY_FACADE_V1.md) and
-[Candidate D color comparison](docs/CATEGORICAL_SET_DECISION.md).
+[D1 editorial color refinement](docs/EDITORIAL_PALETTE_REFINEMENT.md).
 
 **This development API is on `codex/scanpy-facade-v1`, pending review:**
 

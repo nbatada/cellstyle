@@ -37,7 +37,8 @@ decision after colors, not a default already accepted in this ticket.
 The scientist has selected **deterministic set-based allocation** as the design
 contract: same category set → stable mapping; changed category set → mapping may
 change. Cross-dataset persistence is explicit via a supplied palette or registry.
-See [Candidate D's three palette variants](CATEGORICAL_SET_DECISION.md). B/C are
+D1's expanded-editorial direction is selected but not frozen. See the
+[active D1a/D1b/D1c refinement](EDITORIAL_PALETTE_REFINEMENT.md). D2/D3 and B/C are
 retired from further development; no variant is installed as a default.
 
 ## Historical A/B/C comparison (superseded)

@@ -1,7 +1,9 @@
 # Candidate D — deterministic allocation for the current category set
 
-Status: comparison prototypes only; scientist selection pending. No variant has
-been installed as a `cs.pl.umap` default. Candidates B and C are retired from
+Status: D1's editorial direction is selected; the palette is not frozen.
+D2/D3 are retired from further development. The active decision is the
+[D1a/D1b/D1c focused refinement](EDITORIAL_PALETTE_REFINEMENT.md).
+No variant has been installed as a `cs.pl.umap` default. Candidates B and C are retired from
 further development; their previous comparison remains historical evidence.
 
 ## Contract selected by the scientist
@@ -32,7 +34,7 @@ The current comparison does not change the registry schema or persistence API.
 No identity-name hashing is used in Candidate D. SHA256 in its diagnostics is
 only a checksum of the frozen fixture, not a color-assignment mechanism.
 
-## Three controlled variants
+## Historical three-variant comparison
 
 ![Candidate D palette comparison at 5, 12 and 28 identities](images/categorical-set-candidates.png)
 
@@ -96,6 +98,6 @@ files were rendered. Package runtime code was unchanged, so no installed-wheel,
 R, or broad package suite was rerun locally for this comparison-only checkpoint.
 
 Scientist selection is required before implementation into `cellstyle.pl`.
-Select D1, D2, D3, or critique the alternatives. There is no automatic choice based
+Select or critique the active D1a/D1b/D1c refinement; D2/D3 are retired. There is no automatic choice based
 on the distance numbers. The earlier identity-hash candidates B/C are not part
 of this decision.
