@@ -2,6 +2,7 @@
 
 from importlib.metadata import version as _distribution_version
 
+from . import pl
 from .theme import set_theme, theme_context
 from .colors import (
     EDITORIAL_VIVID,
@@ -21,6 +22,7 @@ __version__ = _distribution_version("cellstyle")
 
 __all__ = [
     "__version__",
+    "pl",
     "set_theme",
     "theme_context",
     "EDITORIAL_VIVID",
