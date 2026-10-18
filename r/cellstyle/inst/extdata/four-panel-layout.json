@@ -1,0 +1,42 @@
+{
+  "schema": "cellstyle-layout-1",
+  "id": "synthetic-four",
+  "width_mm": 183,
+  "height_mm": 130,
+  "slots": [
+    {
+      "id": "a",
+      "x_mm": 3,
+      "y_mm": 3,
+      "width_mm": 87,
+      "height_mm": 60,
+      "letter_reserve_mm": null
+    },
+    {
+      "id": "b",
+      "x_mm": 93,
+      "y_mm": 3,
+      "width_mm": 87,
+      "height_mm": 60,
+      "letter_reserve_mm": null
+    },
+    {
+      "id": "c",
+      "x_mm": 3,
+      "y_mm": 67,
+      "width_mm": 87,
+      "height_mm": 60,
+      "letter_reserve_mm": null
+    },
+    {
+      "id": "d",
+      "x_mm": 93,
+      "y_mm": 67,
+      "width_mm": 87,
+      "height_mm": 60,
+      "letter_reserve_mm": null
+    }
+  ],
+  "letter_owner": "assembly",
+  "profile": "nature-flagship-final-research"
+}

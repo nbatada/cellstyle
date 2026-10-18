@@ -12,7 +12,7 @@
     stop("y must be numeric, with finite values or NA.", call. = FALSE)
 }
 
-replicate_distribution <- function(data, x, y, order = NULL, palette = NULL, alpha = .60, point_size = 1.5) {
+replicate_distribution <- function(data, x, y, order = NULL, palette = NULL, alpha = 1, point_size = 1.5, output = NULL) {
   .require_optional("ggbeeswarm")
   .columns(data, x, y)
   .scalar_number(alpha, "alpha", 0, 1)
@@ -38,27 +38,30 @@ replicate_distribution <- function(data, x, y, order = NULL, palette = NULL, alp
   }))
   if (is.null(summary)) summary <- data.frame(.cellstyle_group = character(), q1 = numeric(), median = numeric(), q3 = numeric())
   summary$.cellstyle_group <- factor(summary$.cellstyle_group, levels = order)
-  ggplot2::ggplot(d, ggplot2::aes(x = .data$.cellstyle_group, y = .data$.cellstyle_value)) +
+  p <- ggplot2::ggplot(d, ggplot2::aes(x = .data$.cellstyle_group, y = .data$.cellstyle_value)) +
     ggbeeswarm::geom_beeswarm(ggplot2::aes(colour = .data$.cellstyle_group), method = "swarm", alpha = alpha, size = point_size, show.legend = FALSE) +
     ggplot2::geom_linerange(data = summary, ggplot2::aes(x = .data$.cellstyle_group, ymin = .data$q1, ymax = .data$q3), inherit.aes = FALSE, colour = "#202020", linewidth = .55) +
     ggplot2::geom_point(data = summary, ggplot2::aes(x = .data$.cellstyle_group, y = .data$median), inherit.aes = FALSE, shape = 21, fill = "white", colour = "#202020", size = 2, stroke = .4) +
     scale_colour_cellstyle(palette) + ggplot2::scale_x_discrete(limits = order, drop = FALSE) +
-    ggplot2::labs(x = x, y = y) + theme_cellstyle()
+    ggplot2::labs(x = x, y = y)
+  attr(p, "cellstyle_size_mm") <- c(width = 90 + 15 * max(0, length(order) - 3), height = 60)
+  style_plot(p, output = output)
 }
 
-quantitative_scatter <- function(data, x, y, color = "#1764AB", alpha = .42, point_size = 1.5, fit = FALSE) {
+quantitative_scatter <- function(data, x, y, color = "#1764AB", alpha = 1, point_size = 1.5, fit = FALSE, output = NULL) {
   .columns(data, x, y)
   if (!is.numeric(data[[x]]) || any(!is.finite(data[[x]]) & !is.na(data[[x]]))) stop("x must be numeric, with finite values or NA.", call. = FALSE)
   .scalar_number(alpha, "alpha", 0, 1)
   .scalar_number(point_size, "point_size", .Machine$double.eps)
   if (!is.logical(fit) || length(fit) != 1L || is.na(fit)) stop("fit must be TRUE or FALSE.", call. = FALSE)
-  p <- ggplot2::ggplot(data, ggplot2::aes(x = .data[[x]], y = .data[[y]])) + ggplot2::geom_point(colour = color, alpha = alpha, size = point_size) + theme_cellstyle()
+  p <- ggplot2::ggplot(data, ggplot2::aes(x = .data[[x]], y = .data[[y]])) + ggplot2::geom_point(shape = 21, fill = color, colour = "#202020", stroke = .35 / 2.845276, alpha = alpha, size = point_size) + ggplot2::labs(x = x, y = y)
   if (fit) {
     usable <- stats::complete.cases(data[c(x, y)])
     if (sum(usable) < 2L || length(unique(data[[x]][usable])) < 2L) stop("A linear fit requires at least two distinct complete x values.", call. = FALSE)
     p <- p + ggplot2::geom_smooth(method = "lm", formula = y ~ x, se = FALSE, colour = "#222222", linewidth = .5)
   }
-  p
+  attr(p, "cellstyle_size_mm") <- c(width = 90, height = 48)
+  style_plot(p, output = output)
 }
 
 repel_labels <- function(data, mapping, ..., seed = 0L, max.overlaps = Inf) {

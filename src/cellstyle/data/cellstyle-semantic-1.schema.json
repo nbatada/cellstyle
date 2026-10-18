@@ -1,0 +1,353 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cellstyle.local/schemas/cellstyle-semantic-1.schema.json",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "enum": [
+        "cellstyle-semantic-1"
+      ]
+    },
+    "identities": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/identity"
+      }
+    },
+    "quantities": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/quantity"
+      }
+    },
+    "labels": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/label"
+      }
+    },
+    "statistics": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/statistic"
+      }
+    },
+    "caption": {
+      "$ref": "#/$defs/caption"
+    }
+  },
+  "required": [
+    "schema_version",
+    "identities",
+    "quantities",
+    "labels",
+    "statistics",
+    "caption"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "source": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": [
+            "ticket",
+            "dictionary",
+            "object",
+            "approved_proposal",
+            "unapproved_proposal",
+            "unknown"
+          ]
+        },
+        "reference": {
+          "type": "string"
+        },
+        "revision": {
+          "type": "string"
+        },
+        "approved": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "kind",
+        "reference",
+        "revision",
+        "approved"
+      ],
+      "additionalProperties": false
+    },
+    "claim": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "KNOWN",
+            "UNKNOWN",
+            "NOT_APPLICABLE",
+            "PROPOSED"
+          ]
+        },
+        "value": {
+          "type": [
+            "string",
+            "number",
+            "null"
+          ]
+        },
+        "source": {
+          "$ref": "#/$defs/source"
+        }
+      },
+      "required": [
+        "status",
+        "value",
+        "source"
+      ],
+      "additionalProperties": false
+    },
+    "fact": {
+      "type": "object",
+      "properties": {
+        "candidates": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/claim"
+          }
+        }
+      },
+      "required": [
+        "candidates"
+      ],
+      "additionalProperties": false
+    },
+    "context": {
+      "type": "object",
+      "properties": {
+        "group": {
+          "type": "string"
+        },
+        "facet": {
+          "type": "string"
+        },
+        "subset": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "group",
+        "facet",
+        "subset"
+      ],
+      "additionalProperties": false
+    },
+    "identity": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "label": {
+          "$ref": "#/$defs/fact"
+        },
+        "color": {
+          "$ref": "#/$defs/fact"
+        }
+      },
+      "required": [
+        "id",
+        "label",
+        "color"
+      ],
+      "additionalProperties": false
+    },
+    "quantity": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "entity": {
+          "$ref": "#/$defs/fact"
+        },
+        "measure": {
+          "$ref": "#/$defs/fact"
+        },
+        "assay": {
+          "$ref": "#/$defs/fact"
+        },
+        "unit": {
+          "$ref": "#/$defs/fact"
+        },
+        "denominator": {
+          "$ref": "#/$defs/fact"
+        },
+        "transform": {
+          "$ref": "#/$defs/fact"
+        },
+        "grouping": {
+          "$ref": "#/$defs/fact"
+        },
+        "observation_unit": {
+          "$ref": "#/$defs/fact"
+        },
+        "requires_denominator": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "id",
+        "entity",
+        "measure",
+        "assay",
+        "unit",
+        "denominator",
+        "transform",
+        "grouping",
+        "observation_unit",
+        "requires_denominator"
+      ],
+      "additionalProperties": false
+    },
+    "label": {
+      "type": "object",
+      "properties": {
+        "element_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "role": {
+          "type": "string",
+          "enum": [
+            "axis_title",
+            "axis_tick",
+            "legend_title",
+            "legend_item",
+            "colorbar_title",
+            "colorbar_tick",
+            "facet_strip",
+            "annotation",
+            "figure_title"
+          ]
+        },
+        "binding": {
+          "type": "string",
+          "minLength": 1
+        },
+        "text": {
+          "$ref": "#/$defs/fact"
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "quantity_id": {
+          "type": "string"
+        },
+        "statistic_id": {
+          "type": "string"
+        },
+        "context": {
+          "$ref": "#/$defs/context"
+        },
+        "original": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "element_id",
+        "role",
+        "binding",
+        "text",
+        "required",
+        "quantity_id",
+        "statistic_id",
+        "context"
+      ],
+      "additionalProperties": false
+    },
+    "statistic": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "text": {
+          "$ref": "#/$defs/fact"
+        },
+        "context": {
+          "$ref": "#/$defs/context"
+        }
+      },
+      "required": [
+        "id",
+        "text",
+        "context"
+      ],
+      "additionalProperties": false
+    },
+    "caption": {
+      "type": "object",
+      "properties": {
+        "data_source": {
+          "$ref": "#/$defs/fact"
+        },
+        "observation_unit": {
+          "$ref": "#/$defs/fact"
+        },
+        "independent_n": {
+          "$ref": "#/$defs/fact"
+        },
+        "n_definition": {
+          "$ref": "#/$defs/fact"
+        },
+        "claim_ceiling": {
+          "$ref": "#/$defs/fact"
+        }
+      },
+      "required": [
+        "data_source",
+        "observation_unit",
+        "independent_n",
+        "n_definition",
+        "claim_ceiling"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "x-cellstyle": {
+    "authority_priority": [
+      "ticket",
+      "dictionary",
+      "object",
+      "approved_proposal",
+      "unapproved_proposal",
+      "unknown"
+    ],
+    "quantity_fields": [
+      "entity",
+      "measure",
+      "assay",
+      "unit",
+      "denominator",
+      "transform",
+      "grouping",
+      "observation_unit"
+    ],
+    "final_caption_fields": [
+      "data_source",
+      "observation_unit",
+      "independent_n",
+      "n_definition",
+      "claim_ceiling"
+    ],
+    "inspection_scope": "M1 declaration and native text only; no artifact or journal readiness"
+  }
+}

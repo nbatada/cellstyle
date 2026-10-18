@@ -57,9 +57,14 @@ theme_cellstyle <- function(mode = "review", base_size = NULL, base_family = "sa
     ggplot2::theme(panel.grid = ggplot2::element_blank(),
       plot.background = ggplot2::element_rect(fill = "white", colour = NA),
       panel.background = ggplot2::element_rect(fill = "white", colour = NA),
-      axis.line = ggplot2::element_line(colour = "#202020", linewidth = .35),
-      axis.ticks = ggplot2::element_line(colour = "#202020", linewidth = .35),
+      axis.line = ggplot2::element_line(colour = "#202020", linewidth = if (mode == "manuscript") .7 / 2.845276 else .35),
+      axis.ticks = ggplot2::element_line(colour = "#202020", linewidth = if (mode == "manuscript") .7 / 2.845276 else .35),
       text = ggplot2::element_text(colour = "#202020"),
+      axis.title = if (mode == "manuscript") ggplot2::element_text(size = base_size) else ggplot2::element_text(),
+      axis.text = if (mode == "manuscript") ggplot2::element_text(size = base_size * 7 / 8) else ggplot2::element_text(),
+      legend.text = if (mode == "manuscript") ggplot2::element_text(size = base_size * 7.5 / 8) else ggplot2::element_text(),
+      legend.title = if (mode == "manuscript") ggplot2::element_text(size = base_size * 7.5 / 8) else ggplot2::element_text(),
+      plot.title = if (mode == "manuscript") ggplot2::element_text(size = base_size * 9 / 8) else ggplot2::element_text(),
       legend.key = ggplot2::element_rect(fill = "white", colour = NA),
       strip.background = ggplot2::element_rect(fill = "#F5F5F5", colour = NA))
 }

@@ -37,3 +37,16 @@ __all__ = [
     "categorical_embedding",
     "focus_embedding",
 ]
+
+from .core.layout import FigureLayout, PanelSlot
+from .export import export_panel, assemble_svg, measure_panel, validate_assembly
+__all__ += ["FigureLayout", "PanelSlot", "export_panel", "assemble_svg", "measure_panel", "validate_assembly"]
+
+# Opt-in semantic checks leave legacy plotting behavior unchanged.
+from .core.semantics import semantic_fact, semantic_contract, read_semantic_contract, validate_semantics
+from .semantic_plot import collect_semantic_text, prepare_semantic_plot
+__all__ += ["semantic_fact", "semantic_contract", "read_semantic_contract", "validate_semantics",
+            "collect_semantic_text", "prepare_semantic_plot"]
+
+from .styling import style_plot
+__all__ += ["style_plot"]

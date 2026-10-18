@@ -8,3 +8,8 @@ __pycache__/
 .RData
 .Rcheck/
 .DS_Store
+
+.r-library/
+*.Rcheck/
+cellstyle_*.tar.gz
+.pytest_cache/

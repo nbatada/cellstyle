@@ -1,0 +1,287 @@
+{
+  "schema_version": "cellstyle-semantic-1",
+  "identities": [
+    {
+      "id": "A",
+      "label": {
+        "candidates": [
+          {
+            "status": "KNOWN",
+            "value": "Synthetic group A",
+            "source": {
+              "kind": "ticket",
+              "reference": "tests/fixtures/semantics/source.json",
+              "revision": "synthetic-fixture-v1",
+              "approved": true
+            }
+          }
+        ]
+      },
+      "color": {
+        "candidates": [
+          {
+            "status": "KNOWN",
+            "value": "#1764AB",
+            "source": {
+              "kind": "ticket",
+              "reference": "tests/fixtures/semantics/source.json",
+              "revision": "synthetic-fixture-v1",
+              "approved": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "B",
+      "label": {
+        "candidates": [
+          {
+            "status": "KNOWN",
+            "value": "Synthetic group B",
+            "source": {
+              "kind": "ticket",
+              "reference": "tests/fixtures/semantics/source.json",
+              "revision": "synthetic-fixture-v1",
+              "approved": true
+            }
+          }
+        ]
+      },
+      "color": {
+        "candidates": [
+          {
+            "status": "KNOWN",
+            "value": "#00A2A5",
+            "source": {
+              "kind": "ticket",
+              "reference": "tests/fixtures/semantics/source.json",
+              "revision": "synthetic-fixture-v1",
+              "approved": true
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "quantities": [
+    {
+      "id": "x",
+      "entity": {
+        "candidates": [
+          {
+            "status": "KNOWN",
+            "value": "synthetic observation",
+            "source": {
+              "kind": "ticket",
+              "reference": "tests/fixtures/semantics/source.json",
+              "revision": "synthetic-fixture-v1",
+              "approved": true
+            }
+          }
+        ]
+      },
+      "measure": {
+        "candidates": [
+          {
+            "status": "KNOWN",
+            "value": "synthetic coordinate",
+            "source": {
+              "kind": "ticket",
+              "reference": "tests/fixtures/semantics/source.json",
+              "revision": "synthetic-fixture-v1",
+              "approved": true
+            }
+          }
+        ]
+      },
+      "assay": {
+        "candidates": [
+          {
+            "status": "KNOWN",
+            "value": "Synthetic counts",
+            "source": {
+              "kind": "ticket",
+              "reference": "tests/fixtures/semantics/source.json",
+              "revision": "synthetic-fixture-v1",
+              "approved": true
+            }
+          }
+        ]
+      },
+      "unit": {
+        "candidates": [
+          {
+            "status": "NOT_APPLICABLE",
+            "value": null,
+            "source": {
+              "kind": "ticket",
+              "reference": "tests/fixtures/semantics/source.json",
+              "revision": "synthetic-fixture-v1",
+              "approved": true
+            }
+          }
+        ]
+      },
+      "denominator": {
+        "candidates": [
+          {
+            "status": "NOT_APPLICABLE",
+            "value": null,
+            "source": {
+              "kind": "ticket",
+              "reference": "tests/fixtures/semantics/source.json",
+              "revision": "synthetic-fixture-v1",
+              "approved": true
+            }
+          }
+        ]
+      },
+      "transform": {
+        "candidates": [
+          {
+            "status": "KNOWN",
+            "value": "none",
+            "source": {
+              "kind": "ticket",
+              "reference": "tests/fixtures/semantics/source.json",
+              "revision": "synthetic-fixture-v1",
+              "approved": true
+            }
+          }
+        ]
+      },
+      "grouping": {
+        "candidates": [
+          {
+            "status": "KNOWN",
+            "value": "synthetic group",
+            "source": {
+              "kind": "ticket",
+              "reference": "tests/fixtures/semantics/source.json",
+              "revision": "synthetic-fixture-v1",
+              "approved": true
+            }
+          }
+        ]
+      },
+      "observation_unit": {
+        "candidates": [
+          {
+            "status": "KNOWN",
+            "value": "synthetic observation",
+            "source": {
+              "kind": "ticket",
+              "reference": "tests/fixtures/semantics/source.json",
+              "revision": "synthetic-fixture-v1",
+              "approved": true
+            }
+          }
+        ]
+      },
+      "requires_denominator": false
+    }
+  ],
+  "labels": [
+    {
+      "element_id": "x_axis",
+      "role": "axis_title",
+      "binding": "x.title",
+      "text": {
+        "candidates": [
+          {
+            "status": "KNOWN",
+            "value": "Synthetic embedding 1",
+            "source": {
+              "kind": "ticket",
+              "reference": "tests/fixtures/semantics/source.json",
+              "revision": "synthetic-fixture-v1",
+              "approved": true
+            }
+          }
+        ]
+      },
+      "required": true,
+      "quantity_id": "x",
+      "statistic_id": "",
+      "context": {
+        "group": "",
+        "facet": "",
+        "subset": ""
+      }
+    }
+  ],
+  "statistics": [],
+  "caption": {
+    "data_source": {
+      "candidates": [
+        {
+          "status": "KNOWN",
+          "value": "tests/fixtures/semantics/source.json",
+          "source": {
+            "kind": "ticket",
+            "reference": "tests/fixtures/semantics/source.json",
+            "revision": "synthetic-fixture-v1",
+            "approved": true
+          }
+        }
+      ]
+    },
+    "observation_unit": {
+      "candidates": [
+        {
+          "status": "NOT_APPLICABLE",
+          "value": null,
+          "source": {
+            "kind": "ticket",
+            "reference": "tests/fixtures/semantics/source.json",
+            "revision": "synthetic-fixture-v1",
+            "approved": true
+          }
+        }
+      ]
+    },
+    "independent_n": {
+      "candidates": [
+        {
+          "status": "NOT_APPLICABLE",
+          "value": null,
+          "source": {
+            "kind": "ticket",
+            "reference": "tests/fixtures/semantics/source.json",
+            "revision": "synthetic-fixture-v1",
+            "approved": true
+          }
+        }
+      ]
+    },
+    "n_definition": {
+      "candidates": [
+        {
+          "status": "KNOWN",
+          "value": "12 synthetic observations; biological independent N not applicable",
+          "source": {
+            "kind": "ticket",
+            "reference": "tests/fixtures/semantics/source.json",
+            "revision": "synthetic-fixture-v1",
+            "approved": true
+          }
+        }
+      ]
+    },
+    "claim_ceiling": {
+      "candidates": [
+        {
+          "status": "NOT_APPLICABLE",
+          "value": null,
+          "source": {
+            "kind": "ticket",
+            "reference": "tests/fixtures/semantics/source.json",
+            "revision": "synthetic-fixture-v1",
+            "approved": true
+          }
+        }
+      ]
+    }
+  }
+}

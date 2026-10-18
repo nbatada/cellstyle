@@ -1,4 +1,12 @@
-include VERSION LICENSE CITATION.cff README.md
-recursive-include docs *.md
-recursive-include r/cellstyle DESCRIPTION NAMESPACE LICENSE LICENSE.md .Rbuildignore *.R *.Rd
+include VERSION LICENSE CITATION.cff README.md CHANGELOG.md
+recursive-include docs *.md *.png
+recursive-include examples *.py *.R
+recursive-include schemas *.json
+recursive-include tests *.py *.json
+recursive-include scripts *.py *.R
+recursive-include r/cellstyle DESCRIPTION NAMESPACE LICENSE LICENSE.md .Rbuildignore *.R *.Rd *.json
+prune attachments
+prune strategy
+prune design_evidence
+prune .github
 global-exclude __pycache__ *.py[cod] .DS_Store

@@ -26,9 +26,9 @@ scale_fill_positive(...)
 scale_colour_marker(...)
 scale_fill_marker(...)
 replicate_distribution(data, x, y, order = NULL, palette = NULL,
-  alpha = .60, point_size = 1.5)
-quantitative_scatter(data, x, y, color = "#1764AB", alpha = .42,
-  point_size = 1.5, fit = FALSE)
+  alpha = 1, point_size = 1.5, output = NULL)
+quantitative_scatter(data, x, y, color = "#1764AB", alpha = 1,
+  point_size = 1.5, fit = FALSE, output = NULL)
 repel_labels(data, mapping, ..., seed = 0L, max.overlaps = Inf)
 add_comparisons(plot, comparisons, y_start = NULL, step_fraction = .08,
   bracket_height_fraction = .025)
@@ -43,6 +43,7 @@ add_comparisons(plot, comparisons, y_start = NULL, step_fraction = .08,
 \item{x, y}{Single character strings naming data columns. Scatter x and all y values must be numeric.}
 \item{order}{Explicit discrete category order. Must include every observed identity; extra empty levels are allowed. Defaults preserve factor levels, sort numeric categories, and retain first appearance for other categories.}
 \item{palette}{Named identity-to-color vector covering all displayed groups. NULL assigns the five-color palette in category order; supply a persistent named mapping for stable colors across subsets.}
+\item{output}{Optional new PDF, SVG or PNG path; existing files are never overwritten.}
 \item{alpha}{Observation opacity between zero and one.}
 \item{point_size}{Positive ggplot2 point size; not numerically equivalent to Python point units.}
 \item{color}{Scatter observation color.}
@@ -65,7 +66,7 @@ Label repelling requires optional ggrepel. Supplied labels are not automatically
 
 Comparisons render supplied results only and never compute or select a test. Adjusted P values take precedence and are identified. Formatting preserves the Python convention: P below 0.001 is thresholded, below 0.01 has three decimal places, otherwise two. Brackets and literal text are neutral. Stacking is a compact default; users should inspect long labels at final output size. Facets, flipped/non-Cartesian coordinates, transformed y and fixed y limits are rejected. Later transformations or limits added by the caller require a fresh review of annotation positions.
 
-R defaults are provisional. Seurat-specific and combined plot behavior has not been validated; prefer native Seurat plots and apply themes to suitable individual ggplot objects.
+These initial R defaults are candidates; technical checks do not constitute scientific or visual acceptance. Styling can be added directly to native Seurat ggplots without loading Seurat here.
 }
 \value{Theme and scale functions return additive ggplot2 components; palette helpers return character vectors; plot helpers and add_comparisons return ggplot objects; repel_labels returns a layer.}
 \examples{

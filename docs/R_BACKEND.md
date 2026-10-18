@@ -1,6 +1,6 @@
 # R user guide
 
-CellStyle 0.2.0 is provisional source software. It returns native ggplot objects and additive themes, scales, and layers. Installation from GitHub `main` is described in the [README](../README.md); this is not a CRAN or stable-release claim.
+CellStyle v0.3.0 returns native ggplot objects and additive themes, scales, and layers. Install from the [v0.3.0 tag](../README.md#install-v030) or its GitHub release R source package. These APIs are provisional before 1.0; there is no CRAN claim.
 
 ## Style an existing plot
 
@@ -26,7 +26,17 @@ These observations are synthetic. Reuse named identity mappings across figures. 
 
 `editorial_vivid(n)` supplies up to five provisional identity colors. `context_color()` supplies neutral gray. For positive magnitudes use `scale_colour_positive()` or `scale_fill_positive()`. Marker-upregulation scales are `scale_colour_marker()` and `scale_fill_marker()`; these are not validated general signed-effect scales.
 
-Retain native Seurat `DimPlot` and `FeaturePlot` when appropriate. Themes/scales can be applied to suitable individual ggplot objects, with scale replacement chosen explicitly by the caller. **Seurat-specific and combined/patchwork behavior remains unvalidated.** There are no dedicated Seurat wrappers.
+Retain native Seurat `DimPlot` and `FeaturePlot` when appropriate. Themes/scales can be applied to suitable individual ggplot objects, with scale replacement chosen explicitly by the caller. `style_plot()` supports an individual Seurat ggplot; combined/patchwork objects are unsupported. There are no dedicated Seurat wrappers.
+
+## One-call defaults
+
+```r
+p <- quantitative_scatter(d, "time", "response", output = "scatter.pdf")
+p <- replicate_distribution(d, "condition", "response")
+p <- style_plot(Seurat::DimPlot(object, combine = FALSE)[[1]])
+```
+
+The default helpers return native ggplots. `output` is optional and saving refuses existing files or missing parent directories. `style_plot()` preserves a native plot's data and color encodings. See [one-call usage](one-shot.md).
 
 ## Show biological replicates
 

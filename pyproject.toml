@@ -39,7 +39,9 @@ Repository = "https://github.com/nbatada/cellstyle"
 Issues = "https://github.com/nbatada/cellstyle/issues"
 
 [project.optional-dependencies]
+export = ["pypdf>=5"]
 scanpy = ["scanpy>=1.10"]
+dev = ["pytest>=8", "build>=1.2", "twine>=6", "packaging>=23"]
 
 [tool.setuptools]
 include-package-data = false
@@ -50,3 +52,9 @@ version = {file = ["VERSION"]}
 [tool.setuptools.packages.find]
 where = ["src"]
 include = ["cellstyle*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.setuptools.package-data]
+cellstyle = ["data/*.json"]
