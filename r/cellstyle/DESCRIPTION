@@ -1,6 +1,6 @@
 Package: cellstyle
 Title: Semantic Scientific Styling for Native ggplot2 Plots
-Version: 0.3.0
+Version: 0.4.0
 Config/cellstyle/version-source: ../../VERSION (generated snapshot)
 Authors@R: person("Nizar", "Batada", email = "nizar.batada@gmail.com", role = c("aut", "cre"))
 Description: Composable scientific themes, identity colors, biological replicate

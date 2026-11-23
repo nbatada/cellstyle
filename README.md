@@ -1,81 +1,85 @@
 # CellStyle
 
-One-call scientific plotting for Python and R. CellStyle gives common scatter and replicate plots readable defaults, and styles native Matplotlib, Scanpy, ggplot2 and individual Seurat plots without changing their data or scientific encodings. APIs and defaults are provisional before 1.0.
+Label a cell map, outline clusters while colour shows gene expression, and export the same scientific figure for a paper and a PowerPoint slide. CellStyle works with native Matplotlib and ggplot2 plots.
 
-## Install v0.3.0
+![Leiden assignments, ggforce hulls and CellStyle territories across 622,791 NSCLC T/NK cells](docs/showcase/nsclc-all-clusters.png)
 
-Python 3.10 or later:
+## Install the current Python or R source
+
+Python 3.10 or newer:
 
 ```bash
-python -m pip install "git+https://github.com/nbatada/cellstyle.git@v0.3.0"
+python -m pip install "cellstyle[export] @ git+https://github.com/nbatada/cellstyle.git@main"
 ```
 
-R 4.1 or later:
+Use `[scanpy,export]` for the AnnData helpers. In R 4.1 or newer:
 
 ```r
-remotes::install_github("nbatada/cellstyle", ref = "v0.3.0",
-                        subdir = "r/cellstyle", upgrade = "never")
+install.packages("remotes")  # once
+remotes::install_github("nbatada/cellstyle", ref = "main", subdir = "r/cellstyle")
 ```
 
-The [v0.3.0 GitHub release](https://github.com/nbatada/cellstyle/releases/tag/v0.3.0) also provides a Python wheel, Python source distribution, and R source package. Optional integrations and system requirements are in the [R guide](docs/R_BACKEND.md) and [panel export guide](docs/panel-export.md). CellStyle is not claimed to be on PyPI or CRAN.
+Current source version: **0.4.0**. [Tagged releases and downloadable archives](https://github.com/nbatada/cellstyle/releases).
 
-## Make a plot
+## Keep expression in colour and show a cluster outline
 
 ```python
+import scanpy as sc
 import cellstyle as cs
 
-ax = cs.quantitative_scatter(df["Before score (a.u.)"],
-                             df["After score (a.u.)"], output="scatter.pdf")
-ax = cs.replicate_distribution(df, "Group", "Signal (a.u.)")
+ax = sc.pl.umap(adata, color="NKG7", show=False)
+cs.cluster_outline(ax, adata, groupby="leiden", clusters=["4"])
 ```
 
 ```r
+library(ggplot2)
 library(cellstyle)
-p <- quantitative_scatter(df, "Before score (a.u.)",
-                          "After score (a.u.)", output = "scatter.pdf")
-p <- replicate_distribution(df, "Group", "Signal (a.u.)")
+p <- ggplot(cells, aes(UMAP1, UMAP2)) +
+  geom_point(aes(colour = NKG7)) + coord_equal()
+p + geom_cluster_outline(aes(group = leiden), clusters = "4")
 ```
 
-Each helper returns a native plotting object. `output` is optional; supported formats are PDF, SVG, and PNG. Saving refuses an existing file or missing parent directory. Rows in a replicate plot must already represent the intended observation unit; CellStyle does not determine biological replication or run a statistical test by default. See [one-call usage and limits](docs/one-shot.md).
+Omit `clusters` to outline all groups. The default outlines high-density regions. For adjacent groups, `method="territory"` draws where each group is locally most abundant. Dispersed members can fall outside their own band. In the NSCLC benchmark, 14 of 18 groups had a band and 63.5% of cells lay inside their own. [Two neighboring NSCLC clusters](docs/showcase/nsclc-shared-island.png) · [All Yost BCC T cells](docs/showcase/yost-bcc-all-clusters.png) · [Two neighboring Yost clusters](docs/showcase/yost-bcc-shared-island.png) · [Single-cluster example](docs/showcase/python-one-and-all.png).
 
-To style an existing native plot:
+## Place labels on a dense embedding
+
+For a simple map, Scanpy already offers `legend_loc="on data"`. CellStyle chooses label positions at the figure's render size, and can use scientist-supplied short names where they improve the fit.
+
+![Scanpy, adjustText and CellStyle full-name placement on the same compact PBMC3k map](docs/showcase/comparison-65mm.png)
 
 ```python
-ax = cs.style_plot(sns.boxplot(data=df, x="Group", y="Signal (a.u.)"))
-ax = cs.style_plot(sc.pl.umap(adata, color="cell_type", show=False))
+ax = sc.pl.umap(adata, color="cell_type", legend_loc=None, show=False)
+xy = adata.obsm["X_umap"]
+cs.label_groups(ax, xy[:, 0], xy[:, 1], adata.obs["cell_type"],
+                short_labels={"Dendritic cells": "DCs"})
 ```
 
-```r
-p <- style_plot(ggplot2::ggplot(df, ggplot2::aes(Group, Signal)) +
-                ggplot2::geom_boxplot())
-p <- style_plot(Seurat::DimPlot(object, combine = FALSE)[[1]])
+In R, add `geom_cell_labels(aes(label = cell_type))` to your plot. The comparison is specific to the displayed size and dataset.
+
+## Compare observations and save paper and slide copies
+
+All three panels show the same ten participants with the same paired measurements, median and interquartile range. The native Matplotlib and SciencePlots versions use explicit pair matching and summary code. CellStyle takes the participant ID in the plotting call.
+
+| Matplotlib | Matplotlib + SciencePlots | CellStyle |
+|---|---|---|
+| ![Matplotlib paired observations](docs/showcase/matplotlib.png) | ![SciencePlots paired observations](docs/showcase/scienceplots.png) | ![CellStyle paired observations](docs/showcase/cellstyle.png) |
+
+```python
+import pandas as pd
+import cellstyle as cs
+
+data = pd.read_csv("examples/sleep.csv")  # from this repository
+ax = cs.pl.paired(data, pair="Participant", x="Drug", y="Extra sleep (h)")
+cs.save_for_paper_and_slides(ax, "sleep-figure")
 ```
 
-Native styling keeps Python multi-axes geometry and existing color/data encodings. R accepts one ggplot, including an individual Seurat plot; patchwork composites are unsupported. It does not add observations to a boxplot or infer scientific labels.
+The output includes a manuscript PDF, a slide-sized SVG and a receipt with lettering size at the intended placement. For this 90 × 60 mm plot, the smallest lettering is 16.9 pt when placed at 217.5 × 145 mm on the slide. R provides `paired_distribution()` and `save_for_paper_and_slides()`. [Example PowerPoint slide](docs/showcase/placement-example.pptx) · [Python and R plot gallery](docs/gallery.md) · [Plot types and calls](docs/plot-types.md) · [Original sleep dataset](https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/sleep.html).
 
-## See the difference
+## More workflows
 
-These examples use synthetic observations and demonstrate plotting behavior, not a biological result.
+- [Compose a native Scanpy cell map and marker matrix](docs/cell-overview.md).
+- [Style an existing plot](docs/one-shot.md) or [use R's themes and scales](docs/R_BACKEND.md).
+- [Check saved figures](docs/checked-figures.md), [compare encodings across Python panels](docs/figure-set.md) and [detect changed source files](docs/figure-recipes.md).
+- [Export panels at specified physical dimensions](docs/panel-export.md).
 
-### Focus on one population (Python)
-
-![Two views of the same synthetic embedding: a default categorical scatter on the left and a CellStyle focus view with faint context on the right.](docs/images/focus_comparison.png)
-
-CellStyle keeps other states visible as context while highlighting one state; coordinates stay fixed. [Reproduce this plot](examples/python_focus_comparison.py).
-
-### Show individual replicates (R)
-
-![Two views of the same synthetic observations: default ggplot2 points on the left and a CellStyle beeswarm with open median and interquartile range on the right.](docs/images/replicates_comparison.png)
-
-The beeswarm separates overlapping observations. [Reproduce this plot](examples/r_replicate_comparison.R).
-
-## Optional workflows
-
-- [R guide](docs/R_BACKEND.md): native ggplot themes, identity colors, beeswarms, labels, and supplied comparisons.
-- [Scientific labels](docs/semantic-labels.md): opt-in declarations and checks against visible native text; no mandatory JSON.
-- [Physical panel export](docs/panel-export.md) and [Inkscape assembly](docs/inkscape-assembly.md): exact slot dimensions with receipts and manual final review.
-- [v0.3.0 release notes](docs/RELEASE_NOTES_v0.3.0.md): changes and current boundaries.
-
-The five-color identity palette is provisional; larger category sets need an explicit palette and review. CellStyle does not grant manuscript acceptance, full artifact quality control, or journal compliance. Statistical annotations render results supplied by the analysis; their validity remains the caller's responsibility.
-
-Licensed under the [MIT license](LICENSE). Citation metadata is in [CITATION.cff](CITATION.cff).
+MIT licensed. See [LICENSE](LICENSE) and [CITATION.cff](CITATION.cff).

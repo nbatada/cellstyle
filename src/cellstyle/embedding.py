@@ -75,7 +75,7 @@ def categorical_embedding(
         adata,
         basis=basis,
         color=groupby,
-        palette=colors,
+        palette=palette_map,
         size=size,
         alpha=alpha,
         frameon=False,

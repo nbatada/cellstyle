@@ -50,3 +50,23 @@ __all__ += ["semantic_fact", "semantic_contract", "read_semantic_contract", "val
 
 from .styling import style_plot
 __all__ += ["style_plot"]
+
+# Scanpy-style namespace; legacy top-level helpers remain supported.
+from . import pl
+__all__ += ["pl"]
+
+from .checks import check_plot, check_saved_plot
+__all__ += ["check_plot", "check_saved_plot"]
+
+from .figure_set import FigureSet
+__all__ += ["FigureSet"]
+
+from .provenance import FigureRecipe
+__all__ += ["FigureRecipe"]
+
+from .group_labels import label_groups
+__all__ += ["label_groups"]
+from .delivery import save_for_paper_and_slides
+__all__ += ["save_for_paper_and_slides"]
+from .outlines import cluster_outline, cluster_outlines
+__all__ += ["cluster_outline", "cluster_outlines"]

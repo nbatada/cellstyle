@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.4.0 — GitHub development source
+
+- Add paired observations, grouped swarms, boxes, violins, marker matrices, facets and forest plots for Python and R.
+- Add cluster outlines, adaptive embedding labels and the Python Scanpy cell overview.
+- Export a manuscript PDF and a slide SVG from a native plot. Add Python figure-set and source-freshness checks.
+
 ## 0.3.0 — 2026-10-17
 
 - Add one-call default scatter and replicate plots in Python and R, with optional no-overwrite output.

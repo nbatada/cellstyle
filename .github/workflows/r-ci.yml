@@ -36,6 +36,11 @@ jobs:
         env:
           R_LIBS_USER: ${{ github.workspace }}/.r-library
         run: R CMD check --no-manual cellstyle_*.tar.gz
+      - name: Verify installed public R API
+        env:
+          R_LIBS_USER: ${{ github.workspace }}/.r-library
+        run: |
+          Rscript scripts/smoke_install_r.R VERSION
       - name: Render synthetic composition smoke
         env:
           R_LIBS_USER: ${{ github.workspace }}/.r-library

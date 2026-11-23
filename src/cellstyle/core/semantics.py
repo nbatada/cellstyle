@@ -264,6 +264,8 @@ def validate_semantics(contract, mode="ANALYSIS_RESULT", observed=None, rendered
     for binding, value in (actual or {}).items():
         try:
             quantity_id, field = binding.split(".", 1)
+            if field not in fact_fields["quantities"]:
+                raise KeyError(field)
             claim = next(q[field] for q in resolved["quantities"] if q["id"] == quantity_id)
         except (ValueError, KeyError, StopIteration):
             add("UNKNOWN_REFERENCE", "FAIL", f"$.actual.{binding}", "Actual quantity field is unknown")

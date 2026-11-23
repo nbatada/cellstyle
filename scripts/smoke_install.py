@@ -97,6 +97,11 @@ def main() -> None:
                 [str(python), "-I", "-c", SMOKE, expected, mode, str(ROOT)],
                 cwd=work, env=env, check=True,
             )
+            example = ROOT / "examples" / "first_plot.py"
+            subprocess.run(
+                [str(python), "-I", str(example), str(work / f"first-plot-{mode}.pdf")],
+                cwd=work, env=env, check=True,
+            )
 
 
 if __name__ == "__main__":

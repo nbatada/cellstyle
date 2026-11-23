@@ -110,3 +110,13 @@ def test_native_boxplot_one_call_export_and_no_overwrite(tmp_path):
     with pytest.raises(FileExistsError):
         style_plot(fig, output=link)
     plt.close(fig)
+
+
+def test_style_polar_axes_preserves_projection():
+    fig, ax = plt.subplots(subplot_kw={"projection": "polar"})
+    ax.plot([0, 1], [1, 2])
+    limits = ax.get_ylim()
+    style_plot(ax)
+    assert ax.name == "polar"
+    assert ax.get_ylim() == limits
+    plt.close(fig)

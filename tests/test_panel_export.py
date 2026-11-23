@@ -90,3 +90,46 @@ def test_assembly_and_tampering(tmp_path):
     panels['a'].write_text(panels['a'].read_text()+'\n')
     with pytest.raises(ValueError,match='mismatch'): assemble_svg(layout(),panels,dest)
     plt.close(fig)
+
+
+def test_svg_namespace_preserves_connectors_and_accessible_names():
+    from cellstyle.export import _namespace_svg_ids
+    root = ET.fromstring('''<svg xmlns="http://www.w3.org/2000/svg"
+        aria-labelledby="title desc"><title id="title">Patient workflow</title>
+        <desc id="desc">Samples progress through analysis.</desc>
+        <defs><marker id="arrow"/><clipPath id="clip"/></defs>
+        <style>.edge { marker-end: url("#arrow"); }</style>
+        <path id="edge" marker-end="url( '#arrow' )" clip-path="url(#clip)"/>
+        <text>CD8+ T cells</text><use href="#edge"/></svg>''')
+    _namespace_svg_ids(root, 'p0_')
+    ns = {'s': 'http://www.w3.org/2000/svg'}
+    assert root.get('aria-labelledby') == 'p0_title p0_desc'
+    assert root.find('s:path', ns).get('marker-end') == 'url(#p0_arrow)'
+    assert root.find('s:path', ns).get('clip-path') == 'url(#p0_clip)'
+    assert 'url(#p0_arrow)' in root.find('s:style', ns).text
+    assert root.find('s:use', ns).get('href') == '#p0_edge'
+    assert root.find('s:text', ns).text == 'CD8+ T cells'
+
+
+def test_svg_namespace_rejects_ambiguous_ids():
+    from cellstyle.export import _namespace_svg_ids
+    root = ET.fromstring('<svg><g id="same"/><g id="same"/></svg>')
+    with pytest.raises(ValueError, match='duplicate SVG IDs'):
+        _namespace_svg_ids(root, 'p0_')
+
+
+def test_export_preserves_existing_asset_or_receipt(tmp_path):
+    fig = plot()
+    target = tmp_path / 'existing.svg'
+    target.write_text('previous asset')
+    with pytest.raises(FileExistsError):
+        export(fig, target)
+    assert target.read_text() == 'previous asset'
+    target.unlink()
+    receipt = tmp_path / 'existing.svg.receipt.json'
+    receipt.write_text('previous receipt')
+    with pytest.raises(FileExistsError):
+        export(fig, target)
+    assert receipt.read_text() == 'previous receipt'
+    assert not target.exists()
+    plt.close(fig)

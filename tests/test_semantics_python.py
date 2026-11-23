@@ -123,3 +123,10 @@ def test_final_unrendered_and_callback_gate():
                                 supported_bindings=["x.title"])
     assert "DUPLICATE_OBSERVED_BINDING" in codes(report)
     assert report["label_verdict"] == "FAIL"
+
+
+@pytest.mark.parametrize("binding", ["x.id", "x.requires_denominator", "x.missing"])
+def test_actual_rejects_non_fact_fields(binding):
+    report = validate_semantics(base_contract(), base_dir=ROOT, actual={binding: "x"})
+    assert "UNKNOWN_REFERENCE" in codes(report)
+    assert report["semantic_verdict"] == "FAIL"

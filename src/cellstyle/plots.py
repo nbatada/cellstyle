@@ -1,11 +1,13 @@
 from numbers import Number
 from contextlib import nullcontext
+from collections.abc import Mapping
 
 import numpy as np, pandas as pd, seaborn as sns, matplotlib.pyplot as plt
 
 from .styling import style_plot, _destination, _save_figure
 from .theme import theme_context, _active_mode
 from .colors import editorial_vivid
+from .provenance import _validate_recipe
 
 
 def _category_order(data, x, order):
@@ -24,11 +26,17 @@ def _category_order(data, x, order):
     return categories
 
 
-def replicate_distribution(data, x, y, order=None, palette=None, ax=None, alpha=1, point_size=3.0, output=None):
+def replicate_distribution(data, x, y, order=None, palette=None, ax=None, alpha=1, point_size=3.0, output=None, *, recipe=None):
+    _validate_recipe(recipe, verify=False)
     destination = _destination(output)
     cats=_category_order(data,x,order)
     if palette is None and len(cats) <= 5:
         palette = dict(zip(cats, editorial_vivid(len(cats))))
+    if isinstance(palette, Mapping):
+        palette = dict(palette)
+        missing = [category for category in cats if category not in palette]
+        if missing:
+            raise ValueError(f"Palette missing identities: {missing}")
     owned = ax is None
     mode = _active_mode.get() or "manuscript"
     with theme_context(mode) if owned else nullcontext():
@@ -39,11 +47,12 @@ def replicate_distribution(data, x, y, order=None, palette=None, ax=None, alpha=
             if len(v):
                 m=np.median(v); q1,q3=np.quantile(v,[.25,.75]); ax.vlines(i,q1,q3,color="#202020",lw=1.6,zorder=10); ax.scatter(i,m,s=36,facecolor="white",edgecolor="#202020",lw=1.1,zorder=11)
     if owned and mode == "manuscript":
-        style_plot(ax, size_mm=(max(90, 90 + 15 * (len(cats) - 3)), 60), output=destination)
+        style_plot(ax, size_mm=(max(90, 90 + 15 * (len(cats) - 3)), 60), output=destination, recipe=recipe)
     elif destination is not None:
-        _save_figure(ax.figure, destination)
+        _save_figure(ax.figure, destination, recipe=recipe)
     return ax
-def quantitative_scatter(x,y,ax=None,color="#1764AB",alpha=1,size=20,fit=False,output=None):
+def quantitative_scatter(x,y,ax=None,color="#1764AB",alpha=1,size=20,fit=False,output=None,*,recipe=None):
+    _validate_recipe(recipe, verify=False)
     destination = _destination(output)
     x_name = x.name if isinstance(x, pd.Series) and x.name is not None else "x"
     y_name = y.name if isinstance(y, pd.Series) and y.name is not None else "y"
@@ -58,7 +67,7 @@ def quantitative_scatter(x,y,ax=None,color="#1764AB",alpha=1,size=20,fit=False,o
             ax.set_xlabel(x_name)
             ax.set_ylabel(y_name)
     if owned and mode == "manuscript":
-        style_plot(ax, size_mm=(90, 48), output=destination)
+        style_plot(ax, size_mm=(90, 48), output=destination, recipe=recipe)
     elif destination is not None:
-        _save_figure(ax.figure, destination)
+        _save_figure(ax.figure, destination, recipe=recipe)
     return ax

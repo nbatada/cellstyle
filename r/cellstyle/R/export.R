@@ -46,6 +46,10 @@ read_figure_layout <- function(path) {
 #' @return Invisibly, a geometry receipt. Visual acceptance remains pending.
 #' @export
 export_cellstyle_panel <- function(plot, layout_path, panel_id, path, source_path, font_family) {
+  if (!is.character(path) || length(path) != 1L || is.na(path) || !nzchar(path) ||
+      !dir.exists(dirname(path))) stop("Output path needs an existing parent directory")
+  if (file.exists(path) || file.exists(paste0(path, ".receipt.json")))
+    stop("Output or receipt already exists; choose a new path")
   d <- read_figure_layout(layout_path)
   found <- Filter(function(s) identical(s$id,panel_id),d$slots)
   if (length(found) != 1) stop("Unknown panel ID")

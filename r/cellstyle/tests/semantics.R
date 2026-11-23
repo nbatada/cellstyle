@@ -24,6 +24,10 @@ invalid <- base; invalid$identities[[2]]$color <- invalid$identities[[1]]$color
 stopifnot(code(validate_semantics(invalid, base_dir = base_dir), "COLOR_CONFLICT"))
 invalid <- base; invalid$quantities[[1]]$requires_denominator <- TRUE
 stopifnot(code(validate_semantics(invalid, base_dir = base_dir), "MISSING_DENOMINATOR"))
+for (binding in c("x.id", "x.requires_denominator")) {
+  report <- validate_semantics(base, actual = stats::setNames(list("wrong"), binding), base_dir = base_dir)
+  stopifnot(code(report, "UNKNOWN_REFERENCE"), identical(report$semantic_verdict, "FAIL"))
+}
 
 # Equal top claims resolve independently of input order; conflicting claims fail.
 claim <- base$identities[[1]]$label$candidates[[1]]

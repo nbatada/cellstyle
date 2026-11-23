@@ -88,6 +88,9 @@ def export_panel(fig, layout, panel_id, path, *, source_path, font_family,
     path = Path(path)
     if path.suffix.lower() not in ('.pdf', '.svg'):
         raise ValueError('panel format must be PDF or SVG')
+    for destination in (path, Path(str(path) + '.receipt.json')):
+        if destination.exists() or destination.is_symlink():
+            raise FileExistsError(f'Output already exists: {destination}')
     source_hash = _hash(source_path)
     slot = layout.slot(panel_id)
     roles = text_roles or {}
@@ -176,6 +179,37 @@ def export_panel(fig, layout, panel_id, path, *, source_path, font_family,
     return receipt
 
 
+
+def _namespace_svg_ids(root, prefix):
+    """Preserve local SVG resource and accessibility links during assembly."""
+    ids = [element.get('id') for element in root.iter() if element.get('id')]
+    if len(ids) != len(set(ids)):
+        raise ValueError('duplicate SVG IDs make references ambiguous')
+    mapping = {identifier: prefix + identifier for identifier in ids}
+    local_url = re.compile(r"url\(\s*(['\"]?)#([^\s'\"()]+)\1\s*\)")
+
+    def rewrite_urls(value):
+        return local_url.sub(
+            lambda match: f'url(#{mapping[match[2]]})' if match[2] in mapping else match[0],
+            value,
+        )
+
+    for element in root.iter():
+        for key, value in list(element.attrib.items()):
+            name = key.rsplit('}', 1)[-1]
+            if name == 'id':
+                value = mapping.get(value, value)
+            elif name in ('aria-labelledby', 'aria-describedby'):
+                value = ' '.join(mapping.get(token, token) for token in value.split())
+            elif name == 'href' and value.startswith('#'):
+                value = '#' + mapping.get(value[1:], value[1:])
+            else:
+                value = rewrite_urls(value)
+            element.set(key, value)
+        if element.tag.rsplit('}', 1)[-1] == 'style' and element.text:
+            element.text = rewrite_urls(element.text)
+
+
 def assemble_svg(layout, panels, path):
     """Create a portable editable SVG assembly from checked SVG panels at scale 1.
 
@@ -200,16 +234,7 @@ def assemble_svg(layout, panels, path):
         _check_size(measure_panel(asset), slot)
         panel = ET.parse(asset).getroot()
         # Namespace IDs and references to avoid clipPath/font collisions between panels.
-        mapping = {e.get('id'): f'p{index}_{e.get("id")}' for e in panel.iter() if e.get('id')}
-        for e in panel.iter():
-            if e.get('id'):
-                e.set('id', mapping[e.get('id')])
-            for key, value in list(e.attrib.items()):
-                for old, new in mapping.items():
-                    value = value.replace(f'url(#{old})', f'url(#{new})')
-                    if value == f'#{old}':
-                        value = f'#{new}'
-                e.set(key, value)
+        _namespace_svg_ids(panel, f'p{index}_')
         panel.set('x', str(slot.x_mm)); panel.set('y', str(slot.y_mm))
         panel.set('width', str(slot.width_mm)); panel.set('height', str(slot.height_mm))
         root.append(panel)

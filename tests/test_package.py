@@ -49,7 +49,7 @@ def test_core_metadata_and_optional_scanpy():
     metadata = distribution("cellstyle").metadata
     requirements = [Requirement(item) for item in metadata.get_all("Requires-Dist")]
     core = {canonicalize_name(item.name) for item in requirements if item.marker is None}
-    assert core == {"matplotlib", "numpy", "pandas", "seaborn", "adjusttext"}
+    assert core == {"matplotlib", "contourpy", "numpy", "pandas", "seaborn", "adjusttext"}
     scanpy = next(item for item in requirements if item.name == "scanpy")
     assert scanpy.marker is not None
     assert not scanpy.marker.evaluate({"extra": ""})
