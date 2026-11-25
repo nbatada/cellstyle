@@ -31,3 +31,12 @@ for (kind in c("scatter","swarm")) {
   f <- ggplot_build(facet_plot(facets, "x","y",row="site",col="visit",kind=kind))
   stopifnot(nrow(f$layout$layout) == 4L, "n = 0" %in% tail(f$data,1)[[1]]$label)
 }
+
+dated_visits <- data.frame(person = c(1, 1, 1),
+                           visit = as.Date(c("2026-03-01", "2026-01-01", "2026-02-01")),
+                           y = c(3, 1, 2))
+dated <- ggplot_build(paired_distribution(dated_visits, "person", "visit", "y"))
+stopifnot(identical(dated$layout$panel_params[[1]]$x$get_labels(),
+                    c("2026-01-01", "2026-02-01", "2026-03-01")),
+          identical(as.numeric(dated$data[[1]]$y), c(1, 2)),
+          identical(as.numeric(dated$data[[1]]$yend), c(2, 3)))

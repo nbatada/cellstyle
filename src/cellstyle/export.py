@@ -2,6 +2,7 @@
 import copy
 import hashlib
 import json
+import os
 from pathlib import Path
 import re
 import tempfile
@@ -174,10 +175,22 @@ def export_panel(fig, layout, panel_id, path, *, source_path, font_family,
                    'text': observations, 'profile': NATURE_PROFILE if layout.profile == NATURE_PROFILE['id'] else 'custom',
                    'review_required': ['marks and internal clipping', 'raster resolution',
                                        'font substitution after import', 'final-size visual and scientific review']}
-        candidate.replace(path)
-    Path(str(path) + '.receipt.json').write_text(json.dumps(receipt, indent=2) + '\n')
+        _publish_panel(candidate, path, receipt)
     return receipt
 
+
+
+def _publish_panel(candidate, path, receipt):
+    """Link completed siblings into fresh destinations without replacing either file."""
+    candidate_receipt = candidate.parent / "receipt.json"
+    candidate_receipt.write_text(json.dumps(receipt, indent=2) + "\n")
+    os.link(candidate, path)
+    try:
+        os.link(candidate_receipt, Path(str(path) + ".receipt.json"))
+    except BaseException:
+        if candidate.samefile(path):
+            path.unlink()
+        raise
 
 
 def _namespace_svg_ids(root, prefix):
@@ -216,6 +229,9 @@ def assemble_svg(layout, panels, path):
     panels maps every slot ID to an SVG path with its adjacent export receipt.
     PDF panels must be imported manually at their recorded physical dimensions.
     """
+    path = Path(path)
+    if path.suffix.lower() != ".svg":
+        raise ValueError("assembly destination must be an SVG file")
     if set(panels) != {s.id for s in layout.slots}:
         raise ValueError('assembly requires every panel exactly once')
     ns = 'http://www.w3.org/2000/svg'
@@ -228,24 +244,27 @@ def assemble_svg(layout, panels, path):
         if asset.suffix.lower() != '.svg':
             raise ValueError('automatic assembly requires SVG panels')
         receipt = json.loads(Path(str(asset) + '.receipt.json').read_text())
-        if (receipt['asset_sha256'] != _hash(asset) or receipt['layout_sha256'] != layout.sha256
+        panel_bytes = asset.read_bytes()
+        panel_hash = hashlib.sha256(panel_bytes).hexdigest()
+        if (receipt['asset_sha256'] != panel_hash or receipt['layout_sha256'] != layout.sha256
                 or receipt['panel_id'] != slot.id):
             raise ValueError('panel receipt hash/layout/slot mismatch')
         _check_size(measure_panel(asset), slot)
-        panel = ET.parse(asset).getroot()
+        panel = ET.fromstring(panel_bytes)
         # Namespace IDs and references to avoid clipPath/font collisions between panels.
         _namespace_svg_ids(panel, f'p{index}_')
         panel.set('x', str(slot.x_mm)); panel.set('y', str(slot.y_mm))
         panel.set('width', str(slot.width_mm)); panel.set('height', str(slot.height_mm))
         root.append(panel)
         placements.append({'panel_id': slot.id, 'x_mm': slot.x_mm, 'y_mm': slot.y_mm,
-                           'scale': 1.0, 'asset_sha256': _hash(asset)})
-    path = Path(path)
-    ET.ElementTree(root).write(path, encoding='utf-8', xml_declaration=True)
-    result = {'status': 'ASSEMBLY_GEOMETRY_CHECKED', 'layout_sha256': layout.sha256,
-              'asset_sha256': _hash(path), 'placements': placements,
-              'letter_owner': layout.letter_owner, 'review_required': ['letter placement', 'final-size review', 'scientist acceptance']}
-    Path(str(path) + '.receipt.json').write_text(json.dumps(result, indent=2) + '\n')
+                           'scale': 1.0, 'asset_sha256': panel_hash})
+    with tempfile.TemporaryDirectory(dir=path.parent) as tmp:
+        candidate = Path(tmp) / "assembly.svg"
+        ET.ElementTree(root).write(candidate, encoding='utf-8', xml_declaration=True)
+        result = {'status': 'ASSEMBLY_GEOMETRY_CHECKED', 'layout_sha256': layout.sha256,
+                  'asset_sha256': _hash(candidate), 'placements': placements,
+                  'letter_owner': layout.letter_owner, 'review_required': ['letter placement', 'final-size review', 'scientist acceptance']}
+        _publish_panel(candidate, path, result)
     return result
 
 

@@ -79,6 +79,18 @@ def test_assembly_and_tampering(tmp_path):
     assert all(p['scale']==1 for p in r['placements'])
     assert measure_panel(dest)['width_mm']==183
     assert validate_assembly(dest)['status']=='ASSEMBLY_GEOMETRY_CHECKED'
+    panel = panels['a']
+    receipt = panel.with_suffix('.svg.receipt.json')
+    before = (panel.read_bytes(), receipt.read_bytes())
+    with pytest.raises(FileExistsError):
+        assemble_svg(layout(), panels, panel)
+    assert before == (panel.read_bytes(), receipt.read_bytes())
+    blocked = tmp_path / "blocked.svg"
+    blocked.with_suffix(".svg.receipt.json").write_text("existing")
+    with pytest.raises(FileExistsError):
+        assemble_svg(layout(), panels, blocked)
+    assert not blocked.exists()
+    assert blocked.with_suffix(".svg.receipt.json").read_text() == "existing"
     original=dest.read_bytes()
     dest.write_text(dest.read_text().replace('<svg ', '<svg transform="scale(0.9)" ',1))
     with pytest.raises(ValueError,match='assembly changed'): validate_assembly(dest)

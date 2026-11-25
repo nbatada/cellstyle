@@ -188,9 +188,11 @@ def dotplot(
             colourbar.ax.tick_params(labelsize=6, length=2)
             colourbar.set_label(colour_label, fontsize=7)
             handles = [plt.Line2D([], [], marker="o", linestyle="", color="#202020",
-                                  markersize=np.sqrt(max_area * value) / 1.4, label=(f"{value:.0%}" if size_guide_unit == "percent" else f"{value:g}"))
+                                  markeredgewidth=0, markersize=np.sqrt(max_area * value), label=(f"{value:.0%}" if size_guide_unit == "percent" else f"{value:g}"))
                        for value in (.25, .5, .75, 1.)]
-            ax.legend(handles=handles, title=size_label, loc="upper center", bbox_to_anchor=(.5, -.28),
+            if missing.any():
+                handles.append(plt.Line2D([], [], marker="x", linestyle="", color="#8c8c8c", label="Missing"))
+            ax.legend(handles=handles, markerscale=1, title=size_label, loc="upper center", bbox_to_anchor=(.5, -.28),
                       ncol=4, frameon=False, fontsize=6, title_fontsize=7)
     destination = _destination(output)
     if owned:

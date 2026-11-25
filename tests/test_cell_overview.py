@@ -79,6 +79,20 @@ def test_default_uses_raw_when_present(adata):
         plt.close(fig)
 
 
+def test_explicit_overview_limits_require_clipping_acknowledgement(adata):
+    with pytest.raises(ValueError, match="would clip"):
+        cs.pl.cell_overview(adata, ["G1", "G2"], groupby="group", vmin=0, vmax=1)
+    with pytest.warns(UserWarning, match="clipped"):
+        fig = cs.pl.cell_overview(adata, ["G1", "G2"], groupby="group", vmin=0, vmax=1,
+                                  allow_clipping=True)
+    plt.close(fig)
+
+
+def test_overview_rejects_duplicate_display_labels(adata):
+    with pytest.raises(ValueError, match="visibly unique"):
+        cs.pl.cell_overview(adata, ["G1"], groupby="group", labels={"A": "shared", "B": "shared"})
+
+
 @pytest.mark.parametrize("change,markers", [
     (lambda a: a.obsm.pop("X_umap"), ["G1"]),
     (lambda a: a.obsm["X_umap"].__setitem__((0, 0), np.nan), ["G1"]),

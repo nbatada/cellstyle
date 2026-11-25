@@ -68,8 +68,12 @@ cluster_outlines <- function(data, x, y, group, clusters = NULL, bandwidth = NUL
     # Every observed valid cluster competes before selected paths are filtered; no new identity is assigned.
     winner <- matrix("",grid_size,grid_size); best <- matrix(-Inf,grid_size,grid_size)
     for (id in sort(valid_ids, method="radix")) {
-      take <- densities[[id]] > best
-      winner[take] <- id; best[take] <- densities[[id]][take]
+      density <- densities[[id]]
+      take <- density > best
+      tie <- density == best & is.finite(best)
+      winner[take] <- id
+      winner[tie] <- ""
+      best[take] <- density[take]
     }
     mask_offsets <- -3:3
     mask_kernel <- exp(-.5 * mask_offsets^2)

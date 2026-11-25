@@ -83,3 +83,14 @@ def test_add_multiple_comparisons_stacks():
     assert len(ax.texts) == 2
 
     plt.close(fig)
+
+
+def test_invalid_probability_never_leaves_a_partial_annotation():
+    import pytest
+    fig, ax = plt.subplots()
+    ax.set_xticks([0, 1], ["A", "B"])
+    for p in (-.1, 1.1, float("nan"), float("inf")):
+        with pytest.raises(ValueError, match="Probabilities"):
+            add_comparisons(ax, [ComparisonResult("A", "B", p=0), ComparisonResult("A", "B", p_adjusted=p)])
+        assert len(ax.lines) == len(ax.texts) == 0
+    plt.close(fig)

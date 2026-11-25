@@ -14,6 +14,8 @@ p <- replicate_distribution(DF, "Group", "Signal (a.u.)", output="distribution.p
 
 These calls apply the existing manuscript typography, compact sizing and vivid sparse-point defaults. Scatter starts at 90×48 mm; distributions at 90×60 mm, with additional width for more groups. Both return native plotting objects. Output is optional; PDF, SVG and 300-DPI PNG are supported. Existing files and missing parent directories are reported rather than overwritten or guessed. R SVG uses the existing optional svglite package; nothing is installed silently.
 
+Python scatter requires finite measurements and matching indexes for paired pandas Series. A linear fit requires two distinct x values. Swarm group order must cover every observed group.
+
 For a native plot, use one styling call:
 
 ```python

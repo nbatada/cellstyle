@@ -110,7 +110,14 @@ export_cellstyle_panel <- function(plot, layout_path, panel_id, path, source_pat
   if (length(measured) != 2 || any(!is.finite(measured)) || any(abs(measured-c(s$width_mm,s$height_mm)) > .02)) stop("Exported page differs from slot")
   hash <- function(p) digest::digest(file=p,algo="sha256")
   receipt <- list(schema="cellstyle-panel-receipt-1",status="PANEL_GEOMETRY_CHECKED",layout_id=d$id,layout_sha256=d$sha256,panel_id=panel_id,slot=s,source_path=normalizePath(source_path),source_sha256=hash(source_path),asset_sha256=hash(candidate),measured=list(width_mm=measured[1],height_mm=measured[2]),tolerance_mm=.02,text=list(family=font_family,size_pt=sizes),review_required=c("rotated text and legend bounds","marks and internal clipping","PDF font embedding","raster resolution","font substitution after import","final-size visual and scientific review"))
-  if (!file.copy(candidate,path,overwrite=TRUE)) stop("Could not write panel")
-  jsonlite::write_json(receipt,paste0(path,".receipt.json"),auto_unbox=TRUE,pretty=TRUE,null="null")
+  receipt_path <- paste0(path, ".receipt.json")
+  receipt_candidate <- tempfile("cellstyle-panel-receipt-", tmpdir = dirname(path), fileext = ".json")
+  on.exit(unlink(receipt_candidate), add = TRUE)
+  jsonlite::write_json(receipt, receipt_candidate, auto_unbox=TRUE, pretty=TRUE, null="null")
+  if (!file.link(candidate, path)) stop("Panel output appeared while saving; no existing file was replaced")
+  if (!file.link(receipt_candidate, receipt_path)) {
+    unlink(path)
+    stop("Panel receipt appeared while saving; no existing file was replaced")
+  }
   invisible(receipt)
 }

@@ -35,10 +35,15 @@ style_plot <- function(plot, size_mm = NULL, output = NULL) {
   styled <- plot + theme_cellstyle("manuscript")
   attr(styled, "cellstyle_size_mm") <- size_mm
   if (!is.null(output)) {
-    device <- switch(extension, pdf = grDevices::pdf, svg = svglite::svglite, png = "png")
-    ggplot2::ggsave(output, plot = styled, device = device,
+    if (extension == "pdf" && !capabilities("cairo"))
+      stop("PDF export requires a Cairo PDF device to preserve scientific Unicode text.", call. = FALSE)
+    device <- switch(extension, pdf = grDevices::cairo_pdf, svg = svglite::svglite, png = "png")
+    candidate <- tempfile("cellstyle-save-", tmpdir = dirname(output), fileext = paste0(".", extension))
+    on.exit(unlink(candidate), add = TRUE)
+    ggplot2::ggsave(candidate, plot = styled, device = device,
                     width = size_mm[[1]], height = size_mm[[2]], units = "mm",
                     dpi = if (extension == "png") 300 else 72, bg = "white")
+    if (!file.link(candidate, output)) stop("Output appeared while saving; no existing file was replaced.", call. = FALSE)
   }
   if (!is.null(output)) return(invisible(styled))
   styled

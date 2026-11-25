@@ -149,3 +149,13 @@ def test_external_axes_keep_caller_canvas_size():
     heatmap(means, scale_label="Mean", ax=ax)
     assert tuple(fig.get_size_inches()) == (4, 3)
     plt.close(fig)
+
+
+def test_external_dot_guide_matches_observed_area():
+    means = pd.DataFrame([[1.]])
+    fig, ax = plt.subplots()
+    dotplot(means, means, colour_label="Mean", size_label="Fraction", ax=ax)
+    largest = ax.get_legend().get_lines()[-1]
+    assert largest.get_markersize() ** 2 == pytest.approx(ax.collections[0].get_sizes()[0])
+    assert largest.get_markeredgewidth() == 0
+    plt.close(fig)

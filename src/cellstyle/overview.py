@@ -72,7 +72,7 @@ def _plot_data(adata, markers, groupby, basis, use_raw, layer):
 def cell_overview(adata, markers, *, groupby, basis='X_umap', use_raw=None, layer=None,
                   palette=None, labels=None, size_mm=None, title=None, subtitle=None,
                   expression_label='Mean expression', expression_cutoff=0, vmin=None, vmax=None,
-                  point_size=4, alpha=.85, output=None, recipe=None):
+                  point_size=4, alpha=.85, allow_clipping=False, output=None, recipe=None):
     """Draw the selected two-panel layout; never compute an embedding or change input data.
 
     Native Scanpy DotPlot supplies group means and fractions above expression_cutoff.
@@ -90,6 +90,8 @@ def cell_overview(adata, markers, *, groupby, basis='X_umap', use_raw=None, laye
     names = [str(category) if labels is None else labels.get(category, str(category)) for category in categories]
     if any(not isinstance(name, str) or not name.strip() for name in names):
         raise ValueError('Display labels must be nonempty strings')
+    if len({name.strip() for name in names}) != len(names):
+        raise ValueError('Display labels must be visibly unique')
     for name, value in [('expression_cutoff', expression_cutoff), ('point_size', point_size), ('alpha', alpha)]:
         if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value):
             raise ValueError(f'{name} must be finite')
@@ -132,6 +134,11 @@ def cell_overview(adata, markers, *, groupby, basis='X_umap', use_raw=None, laye
     high = (observed_max if observed_max > 0 else 1.0) if vmax is None else vmax
     if any(isinstance(v, bool) or not isinstance(v, (int, float)) or not math.isfinite(v) for v in (low, high)) or high <= low:
         raise ValueError('vmin/vmax must be finite with vmax greater than vmin')
+    clipped = (means.to_numpy() < low) | (means.to_numpy() > high)
+    if clipped.any():
+        if not allow_clipping:
+            raise ValueError('supplied vmin/vmax would clip mean expression; set allow_clipping=True to acknowledge it')
+        warnings.warn('mean expression is clipped by the supplied colour limits', UserWarning, stacklevel=2)
     with theme_context('manuscript'), mpl.rc_context({'font.family': 'DejaVu Sans'}):
         label_width = max(TextPath((0, 0), name, prop=FontProperties(size=7)).get_extents().width for name in names) * 25.4 / 72
         left = max(.56, .34 + label_width / width + .035)

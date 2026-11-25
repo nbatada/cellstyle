@@ -80,13 +80,13 @@ def correct_layout(figure):
         return
     if len(figure.axes) > 1 and not isinstance(figure.get_layout_engine(), ConstrainedLayoutEngine):
         return
+    figure.canvas.draw()
     for ax in figure.axes:
         if ax.get_visible() and ax.name == 'rectilinear' and getattr(ax, '_colorbar', None) is None:
             _correct_axes_layout(figure, ax)
 
 
 def _correct_axes_layout(figure, ax):
-    figure.canvas.draw()
     renderer = figure.canvas.get_renderer()
     legend = ax.get_legend()
     if legend is not None and legend.get_visible():

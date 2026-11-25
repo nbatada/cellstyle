@@ -20,3 +20,6 @@ territory_a <- suppressWarnings(cluster_outlines(adjacent,"x","y","leiden",clust
 stopifnot(all(territory_a$cluster=="A"), isTRUE(all.equal(territory_a[,c("x","y")],territory_all[territory_all$cluster=="A",c("x","y")])))
 native_territory <- ggplot(adjacent,aes(x,y,colour=leiden))+geom_point()+geom_cluster_outline(aes(group=leiden),method="territory",grid_size=40)
 stopifnot(inherits(native_territory,"ggplot"))
+ties <- rbind(transform(left, leiden = "A"), transform(left, leiden = "B"))
+tied_territory <- suppressWarnings(cluster_outlines(ties, "x", "y", "leiden", method = "territory", grid_size = 40))
+stopifnot(!nrow(tied_territory))

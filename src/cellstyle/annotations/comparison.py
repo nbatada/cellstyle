@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from numbers import Real
 from collections.abc import Mapping, Sequence
 
 import numpy as np
@@ -93,6 +94,25 @@ def add_comparisons(
 
     xpos = _group_positions(ax, positions)
 
+    for result in results:
+        if result.group_a not in xpos:
+            raise KeyError(
+                f"Unknown group_a: {result.group_a!r}"
+            )
+
+        if result.group_b not in xpos:
+            raise KeyError(
+                f"Unknown group_b: {result.group_b!r}"
+            )
+
+        if result.group_a == result.group_b:
+            raise ValueError("Comparisons require distinct groups.")
+        for p in (result.p, result.p_adjusted):
+            if p is not None and (isinstance(p, bool) or not isinstance(p, Real) or not 0 <= p <= 1):
+                raise ValueError("Probabilities must be finite numbers in [0, 1].")
+        if result.display_p() is None and not result.label:
+            raise ValueError("Supply a probability or comparison label.")
+
     ymin, ymax = ax.get_ylim()
     yrange = ymax - ymin
 
@@ -108,16 +128,6 @@ def add_comparisons(
     top = ymax
 
     for i, result in enumerate(results):
-
-        if result.group_a not in xpos:
-            raise KeyError(
-                f"Unknown group_a: {result.group_a!r}"
-            )
-
-        if result.group_b not in xpos:
-            raise KeyError(
-                f"Unknown group_b: {result.group_b!r}"
-            )
 
         x1 = xpos[result.group_a]
         x2 = xpos[result.group_b]
@@ -142,17 +152,9 @@ def add_comparisons(
         else:
             p = result.display_p()
 
-            if p is None:
-                label = ""
-
-            else:
-                label = _format_p(p)
-
-                if (
-                    show_adjusted_marker
-                    and result.p_adjusted is not None
-                ):
-                    label += " adj."
+            label = _format_p(p)
+            if show_adjusted_marker and result.p_adjusted is not None:
+                label += " adj."
 
         if label:
             ax.text(

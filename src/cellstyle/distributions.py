@@ -46,18 +46,9 @@ def _set_readable_linear_ticks(ax, values):
 
 def _display_order(data, column, order):
     """Return every requested level, rejecting orders that would hide records."""
-    if order is None:
-        values = _category_order(data, column, None)
-        if pd.api.types.is_datetime64_any_dtype(data[column]):
-            return list(sorted(values))
-        return values
-    values = list(order)
-    values_index = pd.Index(values)
-    if not values or pd.isna(values_index).any() or not values_index.is_unique:
-        raise ValueError("order must contain unique, nonmissing levels")
-    missing = list(pd.Index(data[column].unique()).difference(pd.Index(values)))
-    if missing:
-        raise ValueError(f"order would hide observed {column} values: {missing}")
+    values = _category_order(data, column, order)
+    if order is None and pd.api.types.is_datetime64_any_dtype(data[column]):
+        return sorted(values)
     return values
 
 
@@ -88,15 +79,25 @@ def paired(data, pair, x, y, order=None, ax=None, color="#1764AB", point_size=4.
             _, ax = plt.subplots(layout="constrained")
         positions = np.arange(len(categories))
         slots = {category: position for position, category in enumerate(categories)}
+        if not set_ticks:
+            axis_labels = {tick.get_text(): pos for tick, pos in zip(ax.get_xticklabels(), ax.get_xticks())}
+            if any(str(c) in axis_labels for c in categories):
+                if not all(str(c) in axis_labels for c in categories):
+                    raise ValueError("Caller axis labels must cover every displayed visit")
+                positions = np.array([axis_labels[str(c)] for c in categories])
         for _, sample in data.groupby(pair, sort=False, observed=True):
-            sample = sample.assign(_slot=sample[x].map(slots)).sort_values("_slot")
-            observed_slots = sample["_slot"].to_numpy()
+            sample_slots = sample[x].map(slots).to_numpy(dtype=int)
+            order_indices = np.argsort(sample_slots)
+            observed_slots = sample_slots[order_indices]
+            sample_values = sample[y].to_numpy()[order_indices]
             for left, right in zip(range(len(sample) - 1), range(1, len(sample))):
                 if observed_slots[right] == observed_slots[left] + 1:
-                    ax.plot(sample["_slot"].iloc[[left, right]], sample[y].iloc[[left, right]],
+                    ax.plot(positions[observed_slots[[left, right]]], sample_values[[left, right]],
                             color=line_color, lw=line_width, zorder=1)
-        for position, category in enumerate(categories):
+        for position, category in zip(positions, categories):
             values = data.loc[data[x] == category, y].to_numpy()
+            if not len(values):
+                continue
             ax.scatter(np.full(len(values), position), values, s=point_size ** 2,
                        color=color, edgecolor="none", linewidth=0, zorder=3)
             _summary(ax, position, values)
@@ -136,7 +137,7 @@ def grouped_swarm(data, x, y, hue, order=None, hue_order=None, palette=None, ax=
         if empty:
             message += f"; empty combinations receive no summary: {empty}"
         warnings.warn(message, UserWarning, stacklevel=2)
-    if palette is None and len(hue_order) <= 5:
+    if palette is None:
         palette = dict(zip(hue_order, editorial_vivid(len(hue_order))))
     if isinstance(palette, Mapping):
         missing_colors = [level for level in hue_order if level not in palette]
@@ -151,7 +152,8 @@ def grouped_swarm(data, x, y, hue, order=None, hue_order=None, palette=None, ax=
                       palette=palette, dodge=True, size=point_size, alpha=alpha, linewidth=0,
                       edgecolor="none", ax=ax, zorder=3)
         offsets = [.8 * ((index + .5) / len(hue_order) - .5) for index in range(len(hue_order))]
-        for x_index, x_level in enumerate(x_order):
+        for x_level, axis_label in zip(x_order, pd.Index(x_order).astype(str)):
+            x_index = float(np.asarray(ax.convert_xunits(axis_label)).item())
             for offset, hue_level in zip(offsets, hue_order):
                 values = data.loc[(data[x] == x_level) & (data[hue] == hue_level), y].to_numpy()
                 if len(values):

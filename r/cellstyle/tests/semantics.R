@@ -47,6 +47,12 @@ plot_fn <- function(resolved) ggplot(data.frame(x = 1:2, y = 1:2), aes(x, y)) + 
 result <- prepare_semantic_plot(plot_fn, base, base_dir = base_dir)
 stopifnot(inherits(result$plot, "ggplot"), identical(result$report$coverage$verified, "x.title"),
           identical(result$report$label_verdict, "PASS"))
+stopifnot(identical(ggplot2::calc_element("axis.title.x", result$plot$theme)$size, 9))
+explicit_theme <- prepare_semantic_plot(function(resolved) {
+  ggplot(data.frame(x = 1:2, y = 1:2), aes(x, y)) + geom_point() +
+    labs(x = resolved$labels[[1]]$text$value, y = NULL) + theme(axis.title.x = element_text(size = 11))
+}, base, visual_intent = "manuscript", base_dir = base_dir)
+stopifnot(identical(ggplot2::calc_element("axis.title.x", explicit_theme$plot$theme)$size, 11))
 wrong <- result$plot + labs(x = "Changed")
 stopifnot(code(prepare_semantic_plot(wrong, base, base_dir = base_dir)$report, "LABEL_MISMATCH"))
 called <- FALSE
