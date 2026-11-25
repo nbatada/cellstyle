@@ -21,6 +21,10 @@ remotes::install_github("nbatada/cellstyle", ref = "main", subdir = "r/cellstyle
 
 Current source version: **0.4.0**. [Tagged releases and downloadable archives](https://github.com/nbatada/cellstyle/releases).
 
+## Run real-data examples
+
+[Five examples with Python and R scripts and paired PDFs](examples/real-data/README.md) cover a tree scatter plot, paired sleep measurements, an iris boxplot, and a PBMC3k marker dot plot and heatmap.
+
 ## Keep expression in colour and show a cluster outline
 
 ```python
