@@ -41,6 +41,13 @@ def forest(data, label, estimate, lower, upper, *, interval_label, reference=Non
         if owned:
             _, ax = plt.subplots()
         y = np.arange(len(data))
+        if not set_y_axis:
+            labels = data[label].astype(str).tolist()
+            ticks = {t.get_text(): pos for t, pos in zip(ax.get_yticklabels(), ax.get_yticks())}
+            if any(name in ticks for name in labels):
+                if not all(name in ticks for name in labels):
+                    raise ValueError("Caller axis labels must cover every estimate")
+                y = np.array([ticks[name] for name in labels])
         if reference is not None:
             ax.axvline(reference, color="#777777", linestyle="--", linewidth=.7, zorder=0)
         ax.hlines(y, lo, hi, color="#404040", linewidth=1)
@@ -55,7 +62,8 @@ def forest(data, label, estimate, lower, upper, *, interval_label, reference=Non
             ax.xaxis.set_major_formatter(decimal)
             ax.xaxis.set_minor_locator(LogLocator(base=10, subs=(2, 5, 7)))
             ax.xaxis.set_minor_formatter(decimal)
-        ax.set_xlabel(f"{estimate} ({interval_label})")
+        if not ax.get_xlabel():
+            ax.set_xlabel(f"{estimate} ({interval_label})")
         if owned:
             style_plot(ax, size_mm=(120, max(48, 22 + 5 * len(data))), output=destination, recipe=recipe)
         elif destination is not None:

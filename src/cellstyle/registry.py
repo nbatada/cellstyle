@@ -2,8 +2,10 @@
 from collections.abc import Mapping
 from dataclasses import dataclass, field
 
+import re
+
 import pandas as pd
-from matplotlib.colors import is_color_like
+from matplotlib.colors import is_color_like, to_hex
 
 
 @dataclass
@@ -15,6 +17,8 @@ class ColorRegistry(Mapping):
             raise ValueError("entity must be a nonempty string")
         if not isinstance(color, str) or not is_color_like(color):
             raise ValueError(f"Invalid color for identity {entity!r}: {color!r}")
+        if re.fullmatch(r"C[0-9]+", color):
+            color = to_hex(color)
         self.entries[entity] = dict(entity=entity, parent=parent, level=level,
                                     role=role, color=color)
 

@@ -77,6 +77,11 @@ prepare_semantic_plot <- function(plot_or_callback, contract, mode = "ANALYSIS_R
   if (length(blocking)) return(list(plot = if (callback) NULL else plot_or_callback, report = preflight,
                                     preflight = preflight, preflight_before_render = callback))
   plot <- if (callback) plot_or_callback(preflight$resolved) else plot_or_callback
+  if (callback) {
+    if (!inherits(plot, "ggplot")) stop("UNSUPPORTED_PLOT: callback must return one native ggplot", call. = FALSE)
+    # Preserve explicit callback styling while supplying the requested native default theme.
+    plot$theme <- theme_cellstyle(visual_intent) + plot$theme
+  }
   collected <- .collect_ggplot_text(plot)
   report <- validate_semantics(contract, mode = mode, observed = collected$observed,
                                rendered = TRUE, supported_bindings = collected$supported_bindings,

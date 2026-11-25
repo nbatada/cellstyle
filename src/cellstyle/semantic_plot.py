@@ -5,6 +5,7 @@ from __future__ import annotations
 from collections.abc import Callable
 
 from matplotlib.axes import Axes
+from matplotlib.colors import to_rgba
 from matplotlib.figure import Figure
 from matplotlib.legend import Legend
 from matplotlib.text import Text
@@ -36,7 +37,8 @@ def collect_semantic_text(plot):
 
     def record(binding, role, native_text):
         supported.add(binding)
-        if isinstance(native_text, Text) and not native_text.get_visible():
+        if isinstance(native_text, Text) and (not native_text.get_visible() or
+                to_rgba(native_text.get_color(), native_text.get_alpha())[3] == 0):
             return
         text = native_text.get_text() if isinstance(native_text, Text) else str(native_text)
         if text:
@@ -65,7 +67,11 @@ def collect_semantic_text(plot):
         for axis_name, ticklabels in (("x", ax.get_xticklabels()), ("y", ax.get_yticklabels())):
             for index, native_text in enumerate(ticklabels):
                 if ax.axison and getattr(ax, axis_name + "axis").get_visible() and native_text.get_visible():
-                    record(prefix + f"{axis_name}.tick[{index}]", "axis_tick", native_text)
+                    axis = getattr(ax, axis_name + "axis")
+                    low, high = sorted(axis.get_view_interval())
+                    coordinate = native_text.get_position()[0 if axis_name == "x" else 1]
+                    if low <= coordinate <= high:
+                        record(prefix + f"{axis_name}.tick[{index}]", "axis_tick", native_text)
         legend = ax.get_legend()
         if isinstance(legend, Legend) and legend.get_visible():
             record(prefix + "legend.title", "legend_title", legend.get_title())

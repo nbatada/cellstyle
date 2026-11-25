@@ -64,7 +64,7 @@ Keep the native point plot. In Python add `cs.label_groups(ax, x, y, identities,
 
 ### Save paper and slide copies
 
-`cs.save_for_paper_and_slides(ax, "figure-1")` and `save_for_paper_and_slides(p, "figure-1")` preserve the plot's manuscript dimensions and export an SVG fitted to a slide placement box. The default box is 250 × 145 mm. The receipt records a 16-pt minimum slide-text target and the measured size at that placement. Review the smaller lettering if a plot is placed at a different size. Python uses the export extra; R requires svglite, xml2, digest and jsonlite for delivery. Both use a fresh directory. [Example PowerPoint file](showcase/placement-example.pptx)
+`cs.save_for_paper_and_slides(ax, "figure-1")` and `save_for_paper_and_slides(p, "figure-1")` preserve the plot's manuscript dimensions and export an SVG fitted to a slide placement box. The default box is 250 × 145 mm. The receipt records a 16-pt minimum slide-text target and the measured size at that placement. The R receipt reports the measured PDF dimensions when pdfinfo is available and flags page-size differences for review. Review the smaller lettering if a plot is placed at a different size. Python uses the export extra; R requires svglite, xml2, digest and jsonlite for delivery. Both use a fresh directory. [Example PowerPoint file](showcase/placement-example.pptx)
 
 ### Outline one or all Leiden clusters on a marker map
 
@@ -83,6 +83,16 @@ p + geom_cluster_outline(aes(group = leiden), clusters = "4")
 p + geom_cluster_outline(aes(group = leiden))
 ```
 
+The shorthand obtains `x`, `y`, and `group` from the base plot. When coordinates
+live in a layer instead, supply the data and all three mappings explicitly:
+
+```r
+ggplot() +
+  geom_point(data = cells, aes(UMAP1, UMAP2, colour = NKG7)) +
+  geom_cluster_outline(data = cells, mapping = aes(x = UMAP1, y = UMAP2, group = leiden),
+                       clusters = "4")
+```
+
 For several marker panels, compute paths **once from the full embedding** and reuse them at the same coordinates. Python takes a DataFrame and R takes a data frame; both return a table with `cluster`, `path`, `x`, and `y`.
 
 ```python
@@ -97,4 +107,4 @@ p + geom_cluster_outline(paths)
 
 The default contour encloses a level set of a Gaussian-smoothed density with approximately 90% of the **grid density mass**. The fraction of observed members inside can differ from 90%. Bandwidth defaults to 3.5% of the full embedding's longest axis span and is expressed in coordinate units. Increasing it can merge islands. Other clusters can occupy the same 2D region. Use equal coordinate aspect and reuse paths only on plots of the same embedding. [Real Leiden example](showcase/python-one-and-all.png)
 
-For neighboring Leiden groups within one dense island, try `method="territory"` in either backend. It compares smoothed counts from all observed groups at each grid position, retains the locally leading group's supported density region, and draws a narrow gap between adjacent bands. No cell labels change. A minority group can have many cells but no drawable band at a given scale. Use the full dataset as input even if you select just one ID. Check the colored point map alongside the outlines. [NSCLC comparison with ggforce](showcase/nsclc-all-clusters.png)
+For neighboring Leiden groups within one dense island, try `method="territory"` in either backend. It compares smoothed counts from all observed groups at each grid position, retains the locally leading group's supported density region, and draws a narrow gap between adjacent bands. Grid positions with exactly tied leading densities have no winner. No cell labels change. A minority group can have many cells but no drawable band at a given scale. Use the full dataset as input even if you select just one ID. Check the colored point map alongside the outlines. [NSCLC comparison with ggforce](showcase/nsclc-all-clusters.png)

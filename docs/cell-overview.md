@@ -62,4 +62,4 @@ biological label placement are not fully automated. No journal certification is 
 expression matrix is validated; an unused matrix does not block a valid plot.
 The data's normalization and units are not inferred: provide expression_label from
 your analysis. With no explicit limits, the color range is zero to the observed
-maximum mean (zero to one for an all-zero matrix). Explicit vmin/vmax override it.
+maximum mean (zero to one for an all-zero matrix). Explicit vmin/vmax override it. Limits that saturate observed group means require allow_clipping=True and issue a warning. Display names must distinguish the groups in the panel.

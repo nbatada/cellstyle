@@ -72,3 +72,10 @@ def test_territory_competes_with_neighbors_even_for_one_selected_cluster():
         inside.append(np.logical_xor.reduce([Path(r[["x","y"]]).contains_points(xy) for _,r in rings.groupby("path")]))
     assert len(inside)==2 and all(a.any() for a in inside)
     assert not (inside[0]&inside[1]).any()
+
+
+def test_identical_territories_have_no_dominant_identity():
+    points = pd.DataFrame({"x":[0,1,0,1,.5], "y":[0,0,1,1,.5]})
+    data = pd.concat([points.assign(g=g) for g in ["B","A"]], ignore_index=True)
+    with pytest.warns(UserWarning, match="no supported"):
+        assert cs.cluster_outlines(data, "x","y","g",method="territory").empty

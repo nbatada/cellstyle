@@ -83,3 +83,22 @@ def test_grouped_swarm_order_cannot_hide_values_and_three_hues_use_seaborn_cente
                        if isinstance(collection, LineCollection))
     assert np.allclose(summary_x[:3], [-.2666667, 0, .2666667])
     plt.close(ax.figure)
+
+
+def test_reverse_categorical_visits_and_empty_level():
+    d = pd.DataFrame({"id": [1, 1, 2, 2], "visit": pd.Categorical(["A","B","A","B"]),
+                      "v": [10, 20, 30, 40]})
+    ax = paired(d, "id", "visit", "v", order=["B", "A", "unused"])
+    assert [line.get_ydata().tolist() for line in ax.lines] == [[20,10],[40,30]]
+    assert [t.get_text() for t in ax.get_xticklabels()] == ["B","A","unused"]
+    plt.close(ax.figure)
+
+
+def test_grouped_swarm_reuses_category_positions():
+    fig, ax = plt.subplots()
+    ax.plot(["B", "A"], [0, 0])
+    d = pd.DataFrame({"g":["A","A","B","B"], "h":["u","v"]*2, "y":[1,2,10,20]})
+    grouped_swarm(d, "g", "y", "h", ax=ax)
+    medians = [c.get_offsets()[0] for c in ax.collections if c.get_zorder() == 11]
+    np.testing.assert_allclose(medians, [[.8,1],[1.2,2],[-.2,10],[.2,20]])
+    plt.close(fig)

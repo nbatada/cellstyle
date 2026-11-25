@@ -102,8 +102,42 @@ def test_forest_uses_supplied_bounds_order_and_reference():
 def test_forest_preserves_explicit_caller_y_axis():
     d = pd.DataFrame({"contrast": ["B", "A"], "ratio": [2., 1.], "lo": [1.2, .8], "hi": [3., 1.4]})
     fig, ax = plt.subplots()
-    ax.set(yticks=(-1, 3), yticklabels=("Caller low", "Caller high"), ylim=(-2, 4))
+    ax.set(yticks=(-1, 3), yticklabels=("Caller low", "Caller high"), ylim=(-2, 4),
+           xlabel="Caller x label")
     pl.forest(d, "contrast", "ratio", "lo", "hi", interval_label="95% CI", ax=ax)
     assert [tick.get_text() for tick in ax.get_yticklabels()] == ["Caller low", "Caller high"]
     assert ax.get_ylim() == (-2, 4)
+    assert ax.get_xlabel() == "Caller x label"
+    plt.close(fig)
+
+
+def test_facet_batches_layout_after_populating_grid(monkeypatch):
+    from matplotlib.backends.backend_agg import FigureCanvasAgg
+    draws = []
+    original = FigureCanvasAgg.draw
+
+    def count(canvas):
+        draws.append(len(canvas.figure.axes))
+        return original(canvas)
+
+    monkeypatch.setattr(FigureCanvasAgg, "draw", count)
+    d = pd.DataFrame({"x":[1, 2, 1, 2], "y":[2, 3, 3, 4], "site":["a", "b", "c", "d"]})
+    fig = pl.facet(d, "x", "y", col="site", kind="scatter")
+    assert len(draws) < len(fig.axes)
+    plt.close(fig)
+
+
+def test_forest_uses_displayed_rows_and_boxplot_preserves_prior_patch():
+    from matplotlib.patches import Rectangle
+    fig, ax = plt.subplots()
+    ax.set_yticks([0,1], ["B","A"])
+    d = pd.DataFrame({"id":["A","B"],"value":[1.,4.],"lo":[.9,3.],"hi":[1.5,5.]})
+    pl.forest(d,"id","value","lo","hi",interval_label="95% CI",ax=ax)
+    np.testing.assert_allclose(ax.collections[-1].get_offsets(), [[1,1],[4,0]])
+    plt.close(fig)
+    fig,ax = plt.subplots()
+    patch = Rectangle((0,0), 1, 1, facecolor=(1,0,0,.85))
+    ax.add_patch(patch)
+    pl.boxplot(d,"id","value",ax=ax)
+    assert patch.get_facecolor()[-1] == .85
     plt.close(fig)

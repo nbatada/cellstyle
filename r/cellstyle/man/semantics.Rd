@@ -28,7 +28,7 @@ prepare_semantic_plot(plot_or_callback, contract, mode = "ANALYSIS_RESULT",
 \item{actual}{Explicit observed quantity facts keyed as quantity.field.}
 \item{base_dir}{Directory for resolving relative source references.}
 \item{plot_or_callback}{Existing ggplot or function taking resolved declarations and returning a ggplot.}
-\item{visual_intent}{Existing theme intent; callbacks apply theme_cellstyle explicitly without global mutation.}
+\item{visual_intent}{Theme intent added to callback results without changing the global theme. Explicit callback theme elements take priority.}
 }
 \value{A fact or contract, or a report with separate semantic and label verdicts. Preparation returns the native plot and report; readiness flags remain false.}
 \details{Requires jsonlite. Unknown, unapproved or unsupported required meaning blocks final-mode checks. Facets, continuous guides and unclassified grob text are not supported by the initial native collector and cannot receive final PASS. Reference existence does not authenticate scientific approval. No statistical tests are chosen or computed.}

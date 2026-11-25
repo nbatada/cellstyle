@@ -123,7 +123,11 @@ forest_plot <- function(data, label, estimate, lower, upper, interval_label, ref
   .columns(data, x, y)
   if (!nrow(data) || any(!is.finite(data[[y]])) || anyNA(data[[x]]))
     stop("Supply finite measurements and identified groups.", call. = FALSE)
-  category <- function(v) if (is.factor(v)) v else factor(v, levels = if (is.numeric(v)) sort(unique(v)) else unique(v))
+  category <- function(v) {
+    if (is.factor(v)) return(v)
+    levels <- if (is.numeric(v) || inherits(v, c("Date", "POSIXct", "POSIXlt"))) sort(unique(v)) else unique(v)
+    factor(v, levels = levels)
+  }
   d <- data.frame(group = category(data[[x]]), value = data[[y]])
   if (!is.null(hue)) {
     if (!hue %in% names(data) || anyNA(data[[hue]]) || hue %in% c(x,y))

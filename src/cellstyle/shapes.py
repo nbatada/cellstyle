@@ -58,11 +58,12 @@ def _observed_distribution(kind, data, x, y, hue, palette, ax, output, recipe):
         # Swarm dodging uses a categorical width of 0.8. Keep summary centers aligned.
         if kind == "box":
             # Keep Seaborn's .8 dodge centers while matching R's .65/n boxes.
+            first = len(ax.patches)
             sns.boxplot(**grouping, width=.8 if hue is not None else .6,
                         gap=1 - .65 / .8 if hue is not None else 0,
                         saturation=1, linewidth=.4, showfliers=False,
                         legend=False)
-            for patch in ax.patches:
+            for patch in ax.patches[first:]:
                 face = patch.get_facecolor()
                 edge = patch.get_edgecolor()
                 patch.set_facecolor((*face[:3], .25))

@@ -110,3 +110,19 @@ def test_empty_line_cannot_verify_identity_color():
     group.add_identity('p1', 'A', line)
     assert group.check()['status'] == 'PARTIAL'
     plt.close(fig)
+
+
+def test_rgb_buffers_and_reused_or_masked_identity_cannot_verify_a_set():
+    fig, axes = plt.subplots(1, 2)
+    group = cs.FigureSet(comparable_quantities={"expression"})
+    for i, ax in enumerate(axes):
+        group.add_quantity(str(i), "expression", ax.imshow(np.ones((2, 2, 3))), unit="counts")
+    assert group.check()["status"] == "PARTIAL"
+    dot = axes[0].scatter([0], [1], color="red")
+    group = cs.FigureSet()
+    for name in ["A", "B"]:
+        group.add_identity(name, "T", dot)
+    assert group.check()["status"] == "PARTIAL"
+    hidden = axes[1].scatter([np.nan], [np.nan], color="red")
+    assert cs.FigureSet(identity_colors={"T":"red"}).add_identity("A","T",hidden).check()["status"] == "PARTIAL"
+    plt.close(fig)

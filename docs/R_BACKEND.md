@@ -97,4 +97,4 @@ From the repository root, after installing required R dependencies:
 R CMD INSTALL r/cellstyle
 ```
 
-Use `help(package = "cellstyle")` for package documentation. Python and R can be used independently. R has no persistent color-registry file interchange; pass named color mappings explicitly.
+Use `help(package = "cellstyle")` for package documentation. Python and R can be used independently. Use read_identity_colors() to read a Python color-registry TSV as a named R color mapping.

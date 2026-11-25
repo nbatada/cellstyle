@@ -130,3 +130,13 @@ def test_actual_rejects_non_fact_fields(binding):
     report = validate_semantics(base_contract(), base_dir=ROOT, actual={binding: "x"})
     assert "UNKNOWN_REFERENCE" in codes(report)
     assert report["semantic_verdict"] == "FAIL"
+
+
+@pytest.mark.parametrize("style", [{"alpha": 0}, {"color": (0, 0, 0, 0)}])
+def test_transparent_required_title_cannot_verify(style):
+    fig, ax = plt.subplots()
+    ax.set_xlabel("Synthetic embedding 1", **style)
+    report = prepare_semantic_plot(ax, base_contract(), mode="MANUSCRIPT_FINAL", base_dir=ROOT)["report"]
+    assert "x.title" not in report["coverage"]["verified"]
+    assert report["label_verdict"] == "FAIL"
+    plt.close(fig)

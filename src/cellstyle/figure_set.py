@@ -68,6 +68,7 @@ class FigureSet:
         if not self._identities and not self._quantities:
             issue('NO_BINDINGS', 'No artists were supplied; nothing was verified.')
         identity_groups = defaultdict(list)
+        identity_artists = defaultdict(set)
         for row in self._identities:
             artist = row['artist']
             try:
@@ -78,6 +79,7 @@ class FigureSet:
             observation = {'panel': row['panel'], 'identity': row['id'], 'color': color}
             observed_identities.append(observation)
             identity_groups[row['id']].append(observation)
+            identity_artists[row['id']].add(id(artist))
             if self.identity_colors:
                 if row['id'] not in self.identity_colors:
                     issue('UNKNOWN_IDENTITY', 'Identity is absent from the supplied registry.',
@@ -86,7 +88,7 @@ class FigureSet:
                     issue('IDENTITY_COLOR_MISMATCH', 'Plotted color differs from the supplied identity color.',
                           failure=True, expected=colors.to_hex(self.identity_colors[row['id']]), **observation)
         for identity, rows in identity_groups.items():
-            if not self.identity_colors and len(rows) < 2:
+            if not self.identity_colors and len(identity_artists[identity]) < 2:
                 issue('INSUFFICIENT_IDENTITY_COMPARISON', 'Supply a registry or another panel for this identity.', identity=identity)
             if len({row['color'] for row in rows}) > 1:
                 issue('IDENTITY_COLOR_MISMATCH', 'The same identity has different colors across panels.',
@@ -130,7 +132,7 @@ def _identity_color(artist):
             or not artist.axes.get_visible()):
         raise ValueError('Identity artist is hidden or is not attached to an axes.')
     if isinstance(artist, PathCollection):
-        if len(artist.get_offsets()) == 0:
+        if not np.isfinite(np.ma.asarray(artist.get_offsets(), dtype=float).filled(np.nan)).all(axis=1).any():
             raise ValueError('Identity scatter has no observations.')
         if artist.get_array() is not None:
             raise ValueError('Scalar-mapped colors cannot verify a constant identity color.')
@@ -156,6 +158,16 @@ def _quantity_scale(artist):
         raise ValueError('Bind a visible scalar-colored scatter or image on an axes.')
     if artist.get_array() is None or artist.get_array().size == 0:
         raise ValueError('Artist has no scalar data array; no quantitative color mapping was verified.')
+    if artist.get_alpha() is not None and not np.any(np.asarray(artist.get_alpha()) > 0):
+        raise ValueError("Quantitative artist is fully transparent.")
+    if isinstance(artist, PathCollection):
+        offsets = np.ma.asarray(artist.get_offsets(), dtype=float).filled(np.nan)
+        if not np.isfinite(offsets).all(axis=1).any():
+            raise ValueError("Quantitative scatter has no finite coordinates.")
+    if isinstance(artist, AxesImage) and artist.get_array().ndim != 2:
+        raise ValueError("Precolored images do not encode a scalar quantity.")
+    if not np.isfinite(np.ma.asarray(artist.get_array(), dtype=float).filled(np.nan)).any():
+        raise ValueError("No finite scalar observations.")
     norm = artist.norm
     if type(norm) not in (colors.Normalize, colors.LogNorm, colors.TwoSlopeNorm, colors.PowerNorm):
         raise ValueError(f'Normalization {type(norm).__name__} is not supported by this check.')

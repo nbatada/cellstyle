@@ -106,3 +106,5 @@ themes do not automatically meet the Nature profile. No defaults are reduced
 silently. Dense or unreadable panels must be deliberately rerendered for the slot.
 
 See [Inkscape assembly](inkscape-assembly.md).
+
+Panel and assembly exports require fresh destination and receipt paths for every revision.

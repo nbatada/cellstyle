@@ -75,6 +75,7 @@ def cluster_outlines(data, x, y, group, *, clusters=None, bandwidth=None,
         density = np.apply_along_axis(smooth,0,np.apply_along_axis(smooth,1,counts))
         if method == "territory":
             wins = density > strongest
+            winner[density == strongest] = -1
             strongest[wins] = density[wins]
             winner[wins] = index
         if identity in selected:
